@@ -35,6 +35,7 @@
             <li class="nav-item"><a class="nav-link" href="{{ url('app/branches') }}"><i class="nav-icon icon-location-pin"></i> {{ trans('admin.branch.title') }}</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url('app/admin-users') }}"><i class="nav-icon icon-user-following"></i> {{ __('User Management') }}</a></li>
             @endif
+           <li class="nav-item"><a class="nav-link" href="{{ url('admin/expenses') }}"><i class="nav-icon icon-plane"></i> {{ trans('admin.expense.title') }}</a></li>
            {{-- Do not delete me :) I'm used for auto-generation menu items --}}
             {{-- <li class="nav-item"><a class="nav-link" href="{{ url('app/translations') }}"><i class="nav-icon icon-location-pin"></i> {{ __('Translations') }}</a></li> --}}
             {{-- Do not delete me :) I'm also used for auto-generation menu items --}}

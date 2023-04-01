@@ -15,3 +15,4 @@ import './access-tier';
 import './customer';
 import './transfer';
 import './trader';
+import './expense';

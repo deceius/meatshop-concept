@@ -273,3 +273,19 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
         });
     });
 });
+
+
+/* Auto-generated admin routes */
+Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+    Route::prefix('admin')->namespace('App\Http\Controllers\Admin')->name('admin/')->group(static function() {
+        Route::prefix('expenses')->name('expenses/')->group(static function() {
+            Route::get('/',                                             'ExpensesController@index')->name('index');
+            Route::get('/create',                                       'ExpensesController@create')->name('create');
+            Route::post('/',                                            'ExpensesController@store')->name('store');
+            Route::get('/{expense}/edit',                               'ExpensesController@edit')->name('edit');
+            Route::post('/bulk-destroy',                                'ExpensesController@bulkDestroy')->name('bulk-destroy');
+            Route::post('/{expense}',                                   'ExpensesController@update')->name('update');
+            Route::delete('/{expense}',                                 'ExpensesController@destroy')->name('destroy');
+        });
+    });
+});

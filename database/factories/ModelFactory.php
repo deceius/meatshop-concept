@@ -284,3 +284,18 @@ $factory->define(App\Models\Trader::class, static function (Faker\Generator $fak
         
     ];
 });
+/** @var \Illuminate\Database\Eloquent\Factory $factory */
+$factory->define(App\Models\Expense::class, static function (Faker\Generator $faker) {
+    return [
+        'expense_name' => $faker->sentence,
+        'cost' => $faker->randomFloat,
+        'branch_id' => $faker->sentence,
+        'remarks' => $faker->sentence,
+        'created_by' => $faker->sentence,
+        'updated_by' => $faker->sentence,
+        'created_at' => $faker->dateTime,
+        'updated_at' => $faker->dateTime,
+        
+        
+    ];
+});

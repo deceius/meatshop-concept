@@ -13,7 +13,16 @@ return new class extends Migration
      */
     public function up()
     {
-        //
+        Schema::create('expenses', function (Blueprint $table) {
+            $table->id();
+            $table->string('expense_name');
+            $table->double('cost');
+            $table->unsignedBigInteger('branch_id');
+            $table->string('remarks');
+            $table->string('created_by');
+            $table->string('updated_by')->nullable();
+            $table->timestamps();
+        });
     }
 
     /**
@@ -24,5 +33,6 @@ return new class extends Migration
     public function down()
     {
         //
+        Schema::dropIfExists('expenses');
     }
 };
