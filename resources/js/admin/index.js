@@ -1,0 +1,17 @@
+import './admin-user';
+import './profile-edit-profile';
+import './profile-edit-password';
+import './brand';
+import './type';
+import './item';
+import './branch';
+import './price';
+import './user';
+import './permission';
+import './role';
+import './transaction-detail';
+import './transaction-header';
+import './access-tier';
+import './customer';
+import './transfer';
+import './trader';
