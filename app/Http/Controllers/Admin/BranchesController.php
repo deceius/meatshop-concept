@@ -118,6 +118,7 @@ class BranchesController extends AdminController
 
         return view('admin.branch.edit', [
             'branches' => Branch::all(),
+            'branch' => $branch
         ]);
     }
 
