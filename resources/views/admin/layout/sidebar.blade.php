@@ -1,6 +1,7 @@
-<div class="sidebar">
+<div class="sidebar sidebar-show">
     <nav class="sidebar-nav">
         <ul class="nav">
+
            {{-- <li class="nav-item"><a class="nav-link" href="{{ url('app/users') }}"><i class="nav-icon icon-umbrella"></i> {{ trans('admin.user.title') }}</a></li>
            <li class="nav-item"><a class="nav-link" href="{{ url('app/permissions') }}"><i class="nav-icon icon-umbrella"></i> {{ trans('admin.permission.title') }}</a></li>
            <li class="nav-item"><a class="nav-link" href="{{ url('app/roles') }}"><i class="nav-icon icon-compass"></i> {{ trans('admin.role.title') }}</a></li> --}}
@@ -9,7 +10,7 @@
             <li class="nav-title">Reports</li>
 
             <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details') }}"><i class="nav-icon icon-layers"></i> Inventory Details</a></li>
-            <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details') }}"><i class="nav-icon icon-chart"></i> Sales Report</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/sales-report') }}"><i class="nav-icon icon-chart"></i> Sales Report</a></li>
 
             <li class="nav-title">Transactions</li>
             <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-headers').'/1' }}"><i class="nav-icon icon-note"></i> {{ trans('admin.receiving.title') }}</a></li>
@@ -45,5 +46,6 @@
             {{-- <li class="nav-item"><a class="nav-link" href="{{ url('app/configuration') }}"><i class="nav-icon icon-settings"></i> {{ __('Configuration') }}</a></li> --}}
         </ul>
     </nav>
+
     <button class="sidebar-minimizer brand-minimizer" type="button"></button>
 </div>

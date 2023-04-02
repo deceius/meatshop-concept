@@ -180,6 +180,7 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
     Route::prefix('app')->namespace('App\Http\Controllers\Admin')->name('app/')->group(static function() {
         Route::prefix('transaction-details')->name('transaction-details/')->group(static function() {
             Route::get('/',                                             'TransactionDetailsController@index')->name('index');
+            Route::get('/sales-report',                                 'TransactionDetailsController@salesReport')->name('sales-report');
             Route::get('/list/{transactionHeaderId}',                   'TransactionDetailsController@headerDetails')->name('header-details');
             Route::get('/create',                                       'TransactionDetailsController@create')->name('create');
             Route::post('/',                                            'TransactionDetailsController@store')->name('store');

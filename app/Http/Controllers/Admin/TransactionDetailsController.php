@@ -9,6 +9,7 @@ use App\Http\Controllers\EmployeeController;
 use App\Http\Requests\Admin\TransactionDetail\BulkDestroyTransactionDetail;
 use App\Http\Requests\Admin\TransactionDetail\DestroyTransactionDetail;
 use App\Http\Requests\Admin\TransactionDetail\HeaderTransactionDetail;
+use App\Http\Requests\Admin\TransactionDetail\IndexInventorySalesDetail;
 use App\Http\Requests\Admin\TransactionDetail\IndexTransactionDetail;
 use App\Http\Requests\Admin\TransactionDetail\StoreTransactionDetail;
 use App\Http\Requests\Admin\TransactionDetail\UpdateTransactionDetail;
@@ -85,6 +86,56 @@ class TransactionDetailsController extends EmployeeController
         }
 
         return view('admin.transaction-detail.index', ['data' => $data]);
+    }
+
+    public function salesReport(IndexInventorySalesDetail $request)
+    {
+        // create and AdminListing instance for a specific model and
+        $data = AdminListing::create(TransactionDetail::class)->processRequestAndGet(
+            // pass the request with params
+            $request,
+
+            // set columns to query
+            ['brand_name', 'item_name', 'id'],
+
+            // set columns to searchIn
+            ['b.name', 'i.name'],
+
+
+
+            function ($query) use ($request) {
+                $query->select(DB::raw('
+                    td.item_id as id,
+                    th.ref_no as transaction_ref_no,
+                    i.name as item_name,
+                    b.name as brand_name,
+                    td.amount as unit_price,
+                    td.quantity as quantity_sold,
+                    td.selling_price as price_sold,
+                    th.updated_at as last_update'));
+                $query->from( 'transaction_details as td');
+                $query->where('th.branch_id', app('user_branch_id'));
+                $query->where('th.status', 1);
+                $query->where('th.transaction_type_id', 2);
+                $query->with(['item']);
+                $query->with(['item.brand']);
+                $query->join('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id');
+                $query->join('items as i', 'i.id', '=', 'td.item_id');
+                $query->join('brands as b', 'i.brand_id', '=', 'b.id');
+                // $query->groupBy('th.id');
+            }
+        );
+
+        if ($request->ajax()) {
+            if ($request->has('bulk')) {
+                return [
+                    'bulkItems' => $data->pluck('id')
+                ];
+            }
+            return ['data' => $data];
+        }
+
+        return view('admin.transaction-detail.sales_report', ['data' => $data]);
     }
 
 
@@ -337,7 +388,7 @@ class TransactionDetailsController extends EmployeeController
         $result = TransactionDetail::from( 'transaction_details as td' )
                         ->select(DB::raw('td.item_id, sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end) as current_inventory'))
                         ->leftJoin('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id')
-                        ->where('th.status', '=', 1)
+                        // ->where('th.status', '=', 1)
                         ->where('td.qr_code', $qrCode)
                         ->where('th.branch_id', '=', app('user_branch_id'))
                         ->groupBy('td.item_id');

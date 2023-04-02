@@ -1,7 +1,12 @@
 <div class="form-group row align-items-center" :class="{'has-danger': errors.has('qr_code'), 'has-success': fields.qr_code && fields.qr_code.valid }">
     <label for="qr_code" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ trans('admin.transaction-detail.columns.qr_code') }}</label>
         <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
-        <input type="text" readonly v-model="form.qr_code"   class="form-control" :class="{'form-control-danger': errors.has('qr_code'), 'form-control-success': fields.qr_code && fields.qr_code.valid}" id="qr_code" name="qr_code" placeholder="{{ trans('admin.transaction-detail.columns.qr_code') }}">
+            <div class="input-group">
+                <input type="text" v-model="form.qr_code" class="form-control" :class="{'form-control-danger': errors.has('qr_code'), 'form-control-success': fields.qr_code && fields.qr_code.valid}" id="qr_code" name="qr_code" placeholder="{{ trans('admin.transaction-detail.columns.qr_code') }}">
+                <span class="input-group-append">
+                    <button type="button" class="btn btn-primary" @click="setQRCode(form.qr_code, null)"><i class="fa fa-search"></i>&nbsp; {{ trans('brackets/admin-ui::admin.btn.search') }} Inventory</button>
+                </span>
+            </div>
     </div>
 </div>
 
