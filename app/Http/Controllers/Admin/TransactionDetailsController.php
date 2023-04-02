@@ -90,6 +90,7 @@ class TransactionDetailsController extends EmployeeController
 
     public function salesReport(IndexInventorySalesDetail $request)
     {
+        $filterDate = $request->input('filterDate');
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(TransactionDetail::class)->processRequestAndGet(
             // pass the request with params
@@ -103,9 +104,9 @@ class TransactionDetailsController extends EmployeeController
 
 
 
-            function ($query) use ($request) {
+            function ($query) use ($request, $filterDate) {
                 $query->select(DB::raw('
-                    td.item_id as id,
+                    td.id as id,
                     th.ref_no as transaction_ref_no,
                     i.name as item_name,
                     b.name as brand_name,
@@ -122,7 +123,13 @@ class TransactionDetailsController extends EmployeeController
                 $query->join('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id');
                 $query->join('items as i', 'i.id', '=', 'td.item_id');
                 $query->join('brands as b', 'i.brand_id', '=', 'b.id');
+
+                if ($filterDate) {
+                    $query->where(DB::raw('datediff(th.updated_at, CAST(\''. $filterDate .'\' as date))'), 0);
+                }
                 // $query->groupBy('th.id');
+                // dd($query->toSql());
+
             }
         );
 
@@ -134,6 +141,7 @@ class TransactionDetailsController extends EmployeeController
             }
             return ['data' => $data];
         }
+
 
         return view('admin.transaction-detail.sales_report', ['data' => $data]);
     }
@@ -356,7 +364,9 @@ class TransactionDetailsController extends EmployeeController
                 abort(404, 'QR code does not exist in this branch\'s inventory.');
             }
 
-            $price = Price::where('item_id', $itemInventory->item_id)->first();
+            $price = Price::where('item_id', $itemInventory->item_id)
+                        ->where('branch_id', app('user_branch_id'))
+                        ->first();
 
             if ($price == null){
                 abort(404, 'Price settings are not set. Contact your administrator to configure the item price.');

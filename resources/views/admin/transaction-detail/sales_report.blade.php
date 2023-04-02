@@ -20,15 +20,26 @@
                         <div class="card-block">
                             <form @submit.prevent="">
                                 <div class="row justify-content-md-between">
-                                    <div class="col col-lg-7 col-xl-5 form-group">
-                                        <div class="input-group">
-                                            <input class="form-control" placeholder="{{ trans('brackets/admin-ui::admin.placeholder.search') }}" v-model="search" @keyup.enter="filter('search', $event.target.value)" />
-                                            <span class="input-group-append">
-                                                <button type="button" class="btn btn-primary" @click="filter('search', search)"><i class="fa fa-search"></i>&nbsp; {{ trans('brackets/admin-ui::admin.btn.search') }}</button>
-                                            </span>
-                                        </div>
+                                            <div class="col col-lg-8 row">
+                                                <div class="col col-lg-4 col-xl-6 form-group">
+                                                    <div class="input-group">
+                                                        <input class="form-control" placeholder="{{ trans('brackets/admin-ui::admin.placeholder.search') }}" v-model="search" @keyup.enter="filter('search', $event.target.value)" />
+                                                        <span class="input-group-append">
+                                                            <button type="button" class="btn btn-primary" @click="filter('search', search)"><i class="fa fa-search"></i>&nbsp; {{ trans('brackets/admin-ui::admin.btn.search') }}</button>
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-lg-6 form-group">
+                                                    <div class="input-group">
+                                                        <datetime v-model="filterDate" class="flatpickr" placeholder="Select date"></datetime>
+                                                        <span class="input-group-append">
+                                                            <button type="button" class="btn btn-primary" @click="filter('filterDate', filterDate)"><i class="fa fa-calendar"></i>&nbsp;Apply</button>
+                                                        </span>
+                                                    </div>
+                                                </div>
                                     </div>
-                                    <div class="col-sm-auto form-group ">
+
+                                    <div class="col-lg-auto form-group ">
                                         <select class="form-control" v-model="pagination.state.per_page">
 
                                             <option value="10">10</option>

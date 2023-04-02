@@ -42,13 +42,14 @@
 
            <li class="nav-title">Reports</li>
            <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/sales-report') }}"><i class="nav-icon icon-chart"></i> Sales Report</a></li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/sales-report') }}"><i class="nav-icon icon-chart"></i> Expense Report</a></li>
             @endif
             @if (in_array(app('user_tier_id'), app('admin_access')))
             <li class="nav-title">{{ trans('admin.terms.item_master_data') }}</li>
             <li class="nav-dropdown nav-item">
                 <a class="nav-link nav-dropdown-toggle"
                 href="#">
-                <i class="nav-icon icon-settings"></i>
+                <i class="nav-icon icon-folder-alt"></i>
                 Master Data
                 </a>
                 <ul class="nav-dropdown-items">

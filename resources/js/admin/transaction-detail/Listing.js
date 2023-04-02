@@ -1,5 +1,10 @@
 import AppListing from '../app-components/Listing/AppListing';
 
 Vue.component('transaction-detail-listing', {
-    mixins: [AppListing]
+    mixins: [AppListing],
+    data: function (){
+        return {
+            filterDate: ''
+        }
+    }
 });

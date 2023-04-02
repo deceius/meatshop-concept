@@ -147,6 +147,9 @@ class PricesController extends ManagerController
     {
         $this->authorize('admin.price.edit', $price);
         $price->load('item');
+        $price->item->load('brand');
+        $price->item->brand_name = $price->item->brand->name;
+
         $currentBranch = Branch::where('id', app('user_branch_id'))->first();
         $items = Item::all();
         foreach ($items as $i){
