@@ -27,9 +27,7 @@ class StoreBranch extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
-            'created_by' => ['required', 'string'],
-            'updated_by' => ['required', 'string'],
-            
+
         ];
     }
 

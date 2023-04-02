@@ -18,6 +18,7 @@ use Illuminate\Contracts\View\Factory;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
@@ -79,6 +80,7 @@ class BranchesController extends AdminController
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
+        $sanitized['created_by'] = Auth::user()->email;
 
         // Store the Branch
         $branch = Branch::create($sanitized);
@@ -133,6 +135,7 @@ class BranchesController extends AdminController
     {
         // Sanitize input
         $sanitized = $request->getSanitized();
+        $sanitized['updated_by'] = Auth::user()->email;
 
         // Update changed values Branch
         $branch->update($sanitized);
