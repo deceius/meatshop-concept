@@ -184,7 +184,7 @@ class TransactionHeadersController extends EmployeeController
             return ['redirect' => url('app/transaction-headers/'.$transactionHeader->id.'/edit').'?type='.$transactionHeader->transaction_type_id, 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/transaction-headers');
+        return redirect('app/transaction-headers');
     }
 
     /**

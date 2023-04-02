@@ -343,7 +343,26 @@ return [
 
         ],
 
+
+
+
     ],
+    'expense' => [
+        'title' => 'Expenses',
+
+        'actions' => [
+            'index' => 'Expenses',
+            'create' => 'New Expense',
+            'export' => 'Export',
+            'edit' => 'Edit Expense',
+        ],
+
+        'columns' => [
+            'id' => 'ID',
+            'expense_name' => 'Expense Name',
+
+        ],
+    ]
 
     // Do not delete me :) I'm used for auto-generation
 ];

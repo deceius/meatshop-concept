@@ -108,7 +108,7 @@ class ItemsController extends ManagerController
             return ['redirect' => url('app/items'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/items');
+        return redirect('app/items');
     }
 
     /**
@@ -172,7 +172,7 @@ class ItemsController extends ManagerController
             ];
         }
 
-        return redirect('admin/items');
+        return redirect('app/items');
     }
 
     /**

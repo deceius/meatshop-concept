@@ -6,7 +6,7 @@
 
     <access-tier-listing
         :data="{{ $data->toJson() }}"
-        :url="'{{ url('admin/access-tiers') }}'"
+        :url="'{{ url('app/access-tiers') }}'"
         inline-template>
 
         <div class="row">
@@ -14,7 +14,7 @@
                 <div class="card">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> {{ trans('admin.access-tier.actions.index') }}
-                        <a class="btn btn-primary btn-spinner btn-sm pull-right m-b-0" href="{{ url('admin/access-tiers/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.access-tier.actions.create') }}</a>
+                        <a class="btn btn-primary btn-spinner btn-sm pull-right m-b-0" href="{{ url('app/access-tiers/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.access-tier.actions.create') }}</a>
                     </div>
                     <div class="card-body" v-cloak>
                         <div class="card-block">
@@ -94,7 +94,7 @@
                                 <i class="icon-magnifier"></i>
                                 <h3>{{ trans('brackets/admin-ui::admin.index.no_items') }}</h3>
                                 <p>{{ trans('brackets/admin-ui::admin.index.try_changing_items') }}</p>
-                                <a class="btn btn-primary btn-spinner" href="{{ url('admin/access-tiers/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.access-tier.actions.create') }}</a>
+                                <a class="btn btn-primary btn-spinner" href="{{ url('app/access-tiers/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.access-tier.actions.create') }}</a>
                             </div>
                         </div>
                     </div>

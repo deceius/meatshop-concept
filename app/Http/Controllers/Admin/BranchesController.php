@@ -87,7 +87,7 @@ class BranchesController extends AdminController
             return ['redirect' => url('app/branches'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/branches');
+        return redirect('app/branches');
     }
 
     /**
@@ -144,7 +144,7 @@ class BranchesController extends AdminController
             ];
         }
 
-        return redirect('admin/branches');
+        return redirect('app/branches');
     }
 
     /**

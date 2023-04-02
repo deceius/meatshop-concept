@@ -95,7 +95,7 @@ class ProfileController extends Controller
             return ['redirect' => url('app/profile'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/profile');
+        return redirect('app/profile');
     }
 
     /**
@@ -148,6 +148,6 @@ class ProfileController extends Controller
             return ['redirect' => url('app/password'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/password');
+        return redirect('app/password');
     }
 }

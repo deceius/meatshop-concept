@@ -6,7 +6,7 @@
 
     <trader-listing
         :data="{{ $data->toJson() }}"
-        :url="'{{ url('admin/traders') }}'"
+        :url="'{{ url('app/traders') }}'"
         inline-template>
 
         <div class="row">
@@ -14,7 +14,7 @@
                 <div class="card">
                     <div class="card-header">
                         <i class="fa fa-align-justify"></i> {{ trans('admin.trader.actions.index') }}
-                        <a class="btn btn-primary btn-spinner btn-sm pull-right m-b-0" href="{{ url('admin/traders/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.trader.actions.create') }}</a>
+                        <a class="btn btn-primary btn-spinner btn-sm pull-right m-b-0" href="{{ url('app/traders/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.trader.actions.create') }}</a>
                     </div>
                     <div class="card-body" v-cloak>
                         <div class="card-block">
@@ -30,7 +30,7 @@
                                     </div>
                                     <div class="col-sm-auto form-group ">
                                         <select class="form-control" v-model="pagination.state.per_page">
-                                            
+
                                             <option value="10">10</option>
                                             <option value="25">25</option>
                                             <option value="100">100</option>
@@ -80,7 +80,7 @@
                                         <td>@{{ item.trader_name }}</td>
                                         <td>@{{ item.created_by }}</td>
                                         <td>@{{ item.updated_by }}</td>
-                                        
+
                                         <td>
                                             <div class="row no-gutters">
                                                 <div class="col-auto">
@@ -108,7 +108,7 @@
                                 <i class="icon-magnifier"></i>
                                 <h3>{{ trans('brackets/admin-ui::admin.index.no_items') }}</h3>
                                 <p>{{ trans('brackets/admin-ui::admin.index.try_changing_items') }}</p>
-                                <a class="btn btn-primary btn-spinner" href="{{ url('admin/traders/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.trader.actions.create') }}</a>
+                                <a class="btn btn-primary btn-spinner" href="{{ url('app/traders/create') }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.trader.actions.create') }}</a>
                             </div>
                         </div>
                     </div>

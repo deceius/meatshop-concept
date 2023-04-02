@@ -90,10 +90,10 @@ class CustomersController extends ManagerController
         $customer = Customer::create($sanitized);
 
         if ($request->ajax()) {
-            return ['redirect' => url('admin/customers'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
+            return ['redirect' => url('app/customers'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/customers');
+        return redirect('app/customers');
     }
 
     /**
@@ -152,12 +152,12 @@ class CustomersController extends ManagerController
 
         if ($request->ajax()) {
             return [
-                'redirect' => url('admin/customers'),
+                'redirect' => url('app/customers'),
                 'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
             ];
         }
 
-        return redirect('admin/customers');
+        return redirect('app/customers');
     }
 
     /**

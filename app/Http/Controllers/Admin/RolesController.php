@@ -86,7 +86,7 @@ class RolesController extends Controller
             return ['redirect' => url('app/roles'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/roles');
+        return redirect('app/roles');
     }
 
     /**
@@ -142,7 +142,7 @@ class RolesController extends Controller
             ];
         }
 
-        return redirect('admin/roles');
+        return redirect('app/roles');
     }
 
     /**

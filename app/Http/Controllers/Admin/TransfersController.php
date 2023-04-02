@@ -98,10 +98,10 @@ class TransfersController extends ManagerController
         $transfer = Transfer::create($sanitized);
 
         if ($request->ajax()) {
-            return ['redirect' => url('admin/transfers'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
+            return ['redirect' => url('app/transfers'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/transfers');
+        return redirect('app/transfers');
     }
 
     /**
@@ -152,12 +152,12 @@ class TransfersController extends ManagerController
 
         if ($request->ajax()) {
             return [
-                'redirect' => url('admin/transfers'),
+                'redirect' => url('app/transfers'),
                 'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
             ];
         }
 
-        return redirect('admin/transfers');
+        return redirect('app/transfers');
     }
 
     /**

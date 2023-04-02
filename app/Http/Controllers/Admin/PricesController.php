@@ -119,7 +119,7 @@ class PricesController extends ManagerController
             return ['redirect' => url('app/prices'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/prices');
+        return redirect('app/prices');
     }
 
     /**
@@ -187,7 +187,7 @@ class PricesController extends ManagerController
             ];
         }
 
-        return redirect('admin/prices');
+        return redirect('app/prices');
     }
 
     /**

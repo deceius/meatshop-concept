@@ -87,7 +87,7 @@ class UsersController extends AdminController
             return ['redirect' => url('app/users'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/users');
+        return redirect('app/users');
     }
 
     /**
@@ -143,7 +143,7 @@ class UsersController extends AdminController
             ];
         }
 
-        return redirect('admin/users');
+        return redirect('app/users');
     }
 
     /**

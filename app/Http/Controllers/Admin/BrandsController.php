@@ -82,7 +82,7 @@ class BrandsController extends ManagerController
             return ['redirect' => url('app/brands'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/brands');
+        return redirect('app/brands');
     }
 
     /**
@@ -139,7 +139,7 @@ class BrandsController extends ManagerController
             ];
         }
 
-        return redirect('admin/brands');
+        return redirect('app/brands');
     }
 
     /**

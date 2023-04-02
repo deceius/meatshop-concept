@@ -82,7 +82,7 @@ class TypesController extends ManagerController
             return ['redirect' => url('app/types'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/types');
+        return redirect('app/types');
     }
 
     /**
@@ -139,7 +139,7 @@ class TypesController extends ManagerController
             ];
         }
 
-        return redirect('admin/types');
+        return redirect('app/types');
     }
 
     /**

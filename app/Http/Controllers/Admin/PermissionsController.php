@@ -86,7 +86,7 @@ class PermissionsController extends Controller
             return ['redirect' => url('app/permissions'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/permissions');
+        return redirect('app/permissions');
     }
 
     /**
@@ -142,7 +142,7 @@ class PermissionsController extends Controller
             ];
         }
 
-        return redirect('admin/permissions');
+        return redirect('app/permissions');
     }
 
     /**

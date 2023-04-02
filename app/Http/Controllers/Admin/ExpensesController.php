@@ -83,10 +83,10 @@ class ExpensesController extends Controller
         $expense = Expense::create($sanitized);
 
         if ($request->ajax()) {
-            return ['redirect' => url('admin/expenses'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
+            return ['redirect' => url('app/expenses'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/expenses');
+        return redirect('app/expenses');
     }
 
     /**
@@ -137,12 +137,12 @@ class ExpensesController extends Controller
 
         if ($request->ajax()) {
             return [
-                'redirect' => url('admin/expenses'),
+                'redirect' => url('app/expenses'),
                 'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
             ];
         }
 
-        return redirect('admin/expenses');
+        return redirect('app/expenses');
     }
 
     /**

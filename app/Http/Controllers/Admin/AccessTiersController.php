@@ -104,10 +104,10 @@ class AccessTiersController extends AdminController
         $accessTier = AccessTier::create($sanitized);
 
         if ($request->ajax()) {
-            return ['redirect' => url('admin/access-tiers'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
+            return ['redirect' => url('app/access-tiers'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/access-tiers');
+        return redirect('app/access-tiers');
     }
 
     /**
@@ -165,12 +165,12 @@ class AccessTiersController extends AdminController
 
         if ($request->ajax()) {
             return [
-                'redirect' => url('admin/access-tiers'),
+                'redirect' => url('app/access-tiers'),
                 'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
             ];
         }
 
-        return redirect('admin/access-tiers');
+        return redirect('app/access-tiers');
     }
 
     /**

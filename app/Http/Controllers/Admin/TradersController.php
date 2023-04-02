@@ -86,10 +86,10 @@ class TradersController extends ManagerController
         $trader = Trader::create($sanitized);
 
         if ($request->ajax()) {
-            return ['redirect' => url('admin/traders'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
+            return ['redirect' => url('app/traders'), 'message' => trans('brackets/admin-ui::admin.operation.succeeded')];
         }
 
-        return redirect('admin/traders');
+        return redirect('app/traders');
     }
 
     /**
@@ -141,12 +141,12 @@ class TradersController extends ManagerController
 
         if ($request->ajax()) {
             return [
-                'redirect' => url('admin/traders'),
+                'redirect' => url('app/traders'),
                 'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
             ];
         }
 
-        return redirect('admin/traders');
+        return redirect('app/traders');
     }
 
     /**
