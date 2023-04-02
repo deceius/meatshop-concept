@@ -12,8 +12,9 @@
                 :action="'{{ $adminUser->resource_url }}'"
                 :data="{{ $adminUser->toJson() }}"
                 :activation="!!'{{ $activation }}'"
+                :role='{{ $role }}'
                 inline-template>
-            
+
                 <form class="form-horizontal form-edit" method="post" @submit.prevent="onSubmit" :action="action">
 
                     <div class="card-header">

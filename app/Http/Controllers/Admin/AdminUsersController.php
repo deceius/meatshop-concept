@@ -87,7 +87,7 @@ class AdminUsersController extends Controller
         return view('admin.admin-user.create', [
             'activation' => true,
             'role' => Role::where('guard_name', $this->guard)->first(),
-            'roles' => Role::where('guard_name', $this->guard)->get(),
+            'roles' => Role::where('guard_name', $this->guard)->first(),
         ]);
     }
 
@@ -144,6 +144,7 @@ class AdminUsersController extends Controller
 
         return view('admin.admin-user.edit', [
             'adminUser' => $adminUser,
+            'role' => Role::where('guard_name', $this->guard)->first(),
             'activation' => Config::get('admin-auth.activation_enabled'),
             'roles' => Role::all(),
         ]);

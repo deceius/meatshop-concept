@@ -13,22 +13,22 @@ class Expense extends Model
         'remarks',
         'created_by',
         'updated_by',
-    
+
     ];
-    
-    
+
+
     protected $dates = [
         'created_at',
         'updated_at',
-    
+
     ];
-    
+
     protected $appends = ['resource_url'];
 
     /* ************************ ACCESSOR ************************* */
 
     public function getResourceUrlAttribute()
     {
-        return url('/admin/expenses/'.$this->getKey());
+        return url('app/expenses/'.$this->getKey());
     }
 }

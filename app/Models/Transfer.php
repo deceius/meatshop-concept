@@ -28,7 +28,7 @@ class Transfer extends Model
 
     public function getResourceUrlAttribute()
     {
-        return url('/admin/transfers/'.$this->getKey());
+        return url('app/transfers/'.$this->getKey());
     }
     public function deliveryBranch() {
         return $this->belongsTo(Branch::class);

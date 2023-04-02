@@ -29,7 +29,7 @@ class AccessTier extends Model
 
     public function getResourceUrlAttribute()
     {
-        return url('/admin/access-tiers/'.$this->getKey());
+        return url('app/access-tiers/'.$this->getKey());
     }
 
     public function user() {
