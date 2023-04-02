@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\ManagerController;
 use App\Http\Requests\Admin\Expense\BulkDestroyExpense;
 use App\Http\Requests\Admin\Expense\DestroyExpense;
 use App\Http\Requests\Admin\Expense\IndexExpense;
@@ -20,7 +21,7 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
-class ExpensesController extends Controller
+class ExpensesController extends ManagerController
 {
 
     /**

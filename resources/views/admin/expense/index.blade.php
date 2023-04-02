@@ -43,10 +43,7 @@
                                 <thead>
                                     <tr>
                                         <th class="bulk-checkbox">
-                                            <input class="form-check-input" id="enabled" type="checkbox" v-model="isClickedAll" v-validate="''" data-vv-name="enabled"  name="enabled_fake_element" @click="onBulkItemsClickedAllWithPagination()">
-                                            <label class="form-check-label" for="enabled">
-                                                #
-                                            </label>
+
                                         </th>
 
                                         <th is='sortable' :column="'id'">{{ trans('admin.expense.columns.id') }}</th>
@@ -55,7 +52,6 @@
                                         <th is='sortable' :column="'branch_id'">{{ trans('admin.expense.columns.branch_id') }}</th>
                                         <th is='sortable' :column="'remarks'">{{ trans('admin.expense.columns.remarks') }}</th>
                                         <th is='sortable' :column="'created_by'">{{ trans('admin.expense.columns.created_by') }}</th>
-                                        <th is='sortable' :column="'updated_by'">{{ trans('admin.expense.columns.updated_by') }}</th>
 
                                         <th></th>
                                     </tr>
@@ -74,9 +70,7 @@
                                 <tbody>
                                     <tr v-for="(item, index) in collection" :key="item.id" :class="bulkItems[item.id] ? 'bg-bulk' : ''">
                                         <td class="bulk-checkbox">
-                                            <input class="form-check-input" :id="'enabled' + item.id" type="checkbox" v-model="bulkItems[item.id]" v-validate="''" :data-vv-name="'enabled' + item.id"  :name="'enabled' + item.id + '_fake_element'" @click="onBulkItemClicked(item.id)" :disabled="bulkCheckingAllLoader">
-                                            <label class="form-check-label" :for="'enabled' + item.id">
-                                            </label>
+
                                         </td>
 
                                     <td>@{{ item.id }}</td>
@@ -85,7 +79,6 @@
                                         <td>@{{ item.branch_id }}</td>
                                         <td>@{{ item.remarks }}</td>
                                         <td>@{{ item.created_by }}</td>
-                                        <td>@{{ item.updated_by }}</td>
 
                                         <td>
                                             <div class="row no-gutters">

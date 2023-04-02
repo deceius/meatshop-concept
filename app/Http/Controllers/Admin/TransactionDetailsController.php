@@ -65,6 +65,7 @@ class TransactionDetailsController extends EmployeeController
                 $query->select(DB::raw('td.item_id as id, i.name as item_name, b.name as brand_name, sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) as incoming, sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end) as outgoing, sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end) as current_inventory, min(th.updated_at) as date_received, max(th.updated_at) as last_update'));
                 $query->from( 'transaction_details as td');
                 $query->where('th.branch_id', app('user_branch_id'));
+                $query->where('th.status', 1);
                 $query->with(['item']);
                 $query->with(['item.brand']);
                 $query->join('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id');

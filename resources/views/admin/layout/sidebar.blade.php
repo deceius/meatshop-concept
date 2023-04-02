@@ -6,9 +6,10 @@
            <li class="nav-item"><a class="nav-link" href="{{ url('app/roles') }}"><i class="nav-icon icon-compass"></i> {{ trans('admin.role.title') }}</a></li> --}}
            {{-- <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details') }}"><i class="nav-icon icon-globe"></i> {{ trans('admin.transaction-detail.title') }}</a></li> --}}
            @if (in_array(app('user_tier_id'), app('employee_access')))
-            <li class="nav-title">Inventory</li>
+            <li class="nav-title">Reports</li>
 
             <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details') }}"><i class="nav-icon icon-layers"></i> Inventory Details</a></li>
+            <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details') }}"><i class="nav-icon icon-chart"></i> Sales Report</a></li>
 
             <li class="nav-title">Transactions</li>
             <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-headers').'/1' }}"><i class="nav-icon icon-note"></i> {{ trans('admin.receiving.title') }}</a></li>
@@ -23,6 +24,9 @@
             <li class="nav-title">Customer Management</li>
             <li class="nav-item"><a class="nav-link" href="{{ url('app/customers') }}"><i class="nav-icon icon-people"></i> Customers </a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url('app/traders') }}"><i class="nav-icon icon-user"></i> {{ trans('admin.trader.title') }}</a></li>
+
+            <li class="nav-title">Expense Management</li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('app/expenses') }}"><i class="nav-icon icon-wallet"></i> {{ trans('admin.expense.title') }}</a></li>
             @endif
             @if (in_array(app('user_tier_id'), app('admin_access')))
 
@@ -35,7 +39,6 @@
             <li class="nav-item"><a class="nav-link" href="{{ url('app/branches') }}"><i class="nav-icon icon-location-pin"></i> {{ trans('admin.branch.title') }}</a></li>
             <li class="nav-item"><a class="nav-link" href="{{ url('app/admin-users') }}"><i class="nav-icon icon-user-following"></i> {{ __('User Management') }}</a></li>
             @endif
-           <li class="nav-item"><a class="nav-link" href="{{ url('app/expenses') }}"><i class="nav-icon icon-plane"></i> {{ trans('admin.expense.title') }}</a></li>
            {{-- Do not delete me :) I'm used for auto-generation menu items --}}
             {{-- <li class="nav-item"><a class="nav-link" href="{{ url('app/translations') }}"><i class="nav-icon icon-location-pin"></i> {{ __('Translations') }}</a></li> --}}
             {{-- Do not delete me :) I'm also used for auto-generation menu items --}}

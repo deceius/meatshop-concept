@@ -1,1 +1,25 @@
 // Write (or import) your styles here
+.btn-success {
+    color: #fff;
+    background-color: #60CF7D;
+    border-color: #60CF7D;
+  }
+
+  .btn-warning:hover {
+    color: #fff;
+    background-color: #f3b20c;
+    border-color: #e7aa0b;
+  }
+  .btn-warning:focus, .btn-warning.focus {
+    box-shadow: 0 0 0 0.2rem rgba(214, 168, 47, 0.5);
+  }
+  .btn-warning.disabled, .btn-warning:disabled {
+    color: #fff;
+    background-color: #F5BE30;
+    border-color: #F5BE30;
+  }
+  .btn-warning:not(:disabled):not(.disabled):active, .btn-warning:not(:disabled):not(.disabled).active, .show > .btn-warning.dropdown-toggle {
+    color: #fff;
+    background-color: #e7aa0b;
+    border-color: #dba10b;
+  }

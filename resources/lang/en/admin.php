@@ -360,6 +360,10 @@ return [
         'columns' => [
             'id' => 'ID',
             'expense_name' => 'Expense Name',
+            'cost' => 'Cost',
+            'branch_id' => 'Branch',
+            'remarks' => 'Remarks',
+            'created_by' => 'Created by',
 
         ],
     ]
