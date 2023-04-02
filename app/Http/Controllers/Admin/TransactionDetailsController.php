@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Exports\InventoryExport;
 use App\Exports\PricesExport;
+use App\Exports\SalesReportExport;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Requests\Admin\TransactionDetail\BulkDestroyTransactionDetail;
@@ -58,12 +59,12 @@ class TransactionDetailsController extends EmployeeController
             ['brand_name', 'item_name', 'id', 'current_inventory'],
 
             // set columns to searchIn
-            ['b.name', 'i.name'],
+            ['b.name', 'i.name', 'td.qr_code'],
 
 
 
             function ($query) use ($request) {
-                $query->select(DB::raw('td.item_id as id, i.name as item_name, b.name as brand_name, sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) as incoming, sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end) as outgoing, sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end) as current_inventory, min(th.updated_at) as date_received, max(th.updated_at) as last_update'));
+                $query->select(DB::raw('td.item_id as id, td.qr_code as qr_code, i.name as item_name, b.name as brand_name, sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) as incoming, sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end) as outgoing, sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end) as current_inventory, min(th.updated_at) as date_received, max(th.updated_at) as last_update'));
                 $query->from( 'transaction_details as td');
                 $query->where('th.branch_id', app('user_branch_id'));
                 $query->where('th.status', 1);
@@ -72,7 +73,7 @@ class TransactionDetailsController extends EmployeeController
                 $query->join('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id');
                 $query->join('items as i', 'i.id', '=', 'td.item_id');
                 $query->join('brands as b', 'i.brand_id', '=', 'b.id');
-                $query->groupBy('td.item_id');
+                $query->groupBy('td.qr_code');
             }
         );
 
@@ -100,7 +101,7 @@ class TransactionDetailsController extends EmployeeController
             ['brand_name', 'item_name', 'id'],
 
             // set columns to searchIn
-            ['b.name', 'i.name'],
+            ['b.name', 'i.name', 'th.ref_no'],
 
 
 
@@ -111,8 +112,8 @@ class TransactionDetailsController extends EmployeeController
                     i.name as item_name,
                     b.name as brand_name,
                     td.amount as unit_price,
-                    td.quantity as quantity_sold,
-                    td.selling_price as price_sold,
+                    sum(td.quantity) as quantity_sold,
+                    sum(td.selling_price) as price_sold,
                     th.updated_at as last_update'));
                 $query->from( 'transaction_details as td');
                 $query->where('th.branch_id', app('user_branch_id'));
@@ -127,7 +128,9 @@ class TransactionDetailsController extends EmployeeController
                 if ($filterDate) {
                     $query->where(DB::raw('datediff(th.updated_at, CAST(\''. $filterDate .'\' as date))'), 0);
                 }
-                // $query->groupBy('th.id');
+                $query->groupBy('th.id');
+                $query->groupBy('td.amount');
+                $query->groupBy('td.item_id');
                 // dd($query->toSql());
 
             }
@@ -418,5 +421,10 @@ class TransactionDetailsController extends EmployeeController
     public function export(): ?BinaryFileResponse
     {
         return Excel::download(app(InventoryExport::class), 'inventory.xlsx');
+    }
+
+    public function salesReportExport(): ?BinaryFileResponse
+    {
+        return Excel::download(app(SalesReportExport::class), 'sales_report.xlsx');
     }
 }

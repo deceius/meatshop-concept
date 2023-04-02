@@ -49,6 +49,7 @@
                                             </label> --}}
                                         </th>
 
+                                        <th is='sortable' :column="'item_name'">QR Code</th>
                                         <th is='sortable' :column="'brand_name'">Brand</th>
                                         <th is='sortable' :column="'item_name'">Item</th>
                                         <th is='sortable' :column="'date_received'">Date Received</th>
@@ -79,6 +80,7 @@
                                             </label> --}}
                                         </td>
 
+                                        <td>@{{ item.qr_code }}</td>
                                         <td>@{{ item.brand_name }}</td>
                                         <td>@{{ item.item_name }}</td>
                                         <td>@{{ item.date_received }}</td>
