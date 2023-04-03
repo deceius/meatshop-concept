@@ -83,8 +83,9 @@ class PricesController extends ManagerController
     public function create()
     {
         $this->authorize('admin.price.create');
-        $items = Item::all();
+
         $currentBranch = Branch::where('id', app('user_branch_id'))->first();
+        $items = Item::all();
         foreach ($items as $i){
             $i->load('brand');
             $i->brand_name = $i->brand->name;
