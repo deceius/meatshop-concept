@@ -71,7 +71,15 @@ class PricesController extends ManagerController
             return ['data' => $data];
         }
 
-        return view('admin.price.index', ['data' => $data, 'items' => Item::all()]);
+        $items = Item::join('brands', 'brands.id', '=', 'items.brand_id')->select('items.*')->get();
+        foreach ($items as $i){
+            $i->load('brand');
+            if ($i->brand != null){
+                $i->brand_name = $i->brand->name;
+            }
+        }
+
+        return view('admin.price.index', ['data' => $data, 'items' => $items]);
     }
 
     /**
@@ -85,10 +93,12 @@ class PricesController extends ManagerController
         $this->authorize('admin.price.create');
 
         $currentBranch = Branch::where('id', app('user_branch_id'))->first();
-        $items = Item::all();
+        $items = Item::join('brands', 'brands.id', '=', 'items.brand_id')->select('items.*')->get();
         foreach ($items as $i){
             $i->load('brand');
-            $i->brand_name = $i->brand->name;
+            if ($i->brand != null){
+                $i->brand_name = $i->brand->name;
+            }
         }
 
         return view('admin.price.create', ['items' => $items,
@@ -152,10 +162,12 @@ class PricesController extends ManagerController
         $price->item->brand_name = $price->item->brand->name;
 
         $currentBranch = Branch::where('id', app('user_branch_id'))->first();
-        $items = Item::all();
+        $items = Item::join('brands', 'brands.id', '=', 'items.brand_id')->select('items.*')->get();
         foreach ($items as $i){
             $i->load('brand');
-            $i->brand_name = $i->brand->name;
+            if ($i->brand != null){
+                $i->brand_name = $i->brand->name;
+            }
         }
 
         return view('admin.price.edit', [

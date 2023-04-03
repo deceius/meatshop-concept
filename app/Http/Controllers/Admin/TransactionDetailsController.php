@@ -215,10 +215,12 @@ class TransactionDetailsController extends EmployeeController
             $item->brand_name = $item->brand->name;
         }
 
-        $items = Item::all();
+        $items = Item::join('brands', 'brands.id', '=', 'items.brand_id')->select('items.*')->get();
         foreach ($items as $i){
             $i->load('brand');
-            $i->brand_name = $i->brand->name;
+            if ($i->brand != null){
+                $i->brand_name = $i->brand->name;
+            }
         }
 
         $params = ['items' => $items, 'transactionHeaderId' => $request->txnId, 'transactionType' => $transactionHeader->transaction_type_id, 'item' => $item];
@@ -282,10 +284,12 @@ class TransactionDetailsController extends EmployeeController
         $transactionHeader = TransactionHeader::where('id', $transactionDetail->transaction_header_id)->first();
         $transactionDetail->load('item');
 
-        $items = Item::all();
+        $items = Item::join('brands', 'brands.id', '=', 'items.brand_id')->select('items.*')->get();
         foreach ($items as $i){
             $i->load('brand');
-            $i->brand_name = $i->brand->name;
+            if ($i->brand != null){
+                $i->brand_name = $i->brand->name;
+            }
         }
 
         return view('admin.transaction-detail.edit', [
