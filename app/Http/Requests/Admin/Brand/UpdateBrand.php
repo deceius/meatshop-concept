@@ -27,9 +27,7 @@ class UpdateBrand extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string'],
-            'created_by' => ['sometimes', 'string'],
-            'updated_by' => ['sometimes', 'string'],
-            
+
         ];
     }
 

@@ -41,8 +41,18 @@
            <li class="nav-item"><a class="nav-link" href="{{ url('app/expenses') }}"><i class="nav-icon icon-wallet"></i> {{ trans('admin.expense.title') }}</a></li>
 
            <li class="nav-title">Reports</li>
-           <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/sales-report') }}"><i class="nav-icon icon-chart"></i> Sales Report</a></li>
-           {{-- <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/sales-report') }}"><i class="nav-icon icon-chart"></i> Expense Report</a></li> --}}
+           <li class="nav-dropdown nav-item">
+                <a class="nav-link nav-dropdown-toggle"
+                href="#">
+                <i class="nav-icon icon-briefcase"></i>
+                Sales
+                </a>
+                <ul class="nav-dropdown-items">
+                       <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/sales-report') }}"><i class="nav-icon icon-chart"></i> Sales Report</a></li>
+                       <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/sales-forecasting') }}"><i class="nav-icon icon-chart"></i> Sales Forecasting</a></li>
+                </ul>
+            </li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/expense-report') }}"><i class="nav-icon icon-chart"></i> Expense Report</a></li>
             @endif
             @if (in_array(app('user_tier_id'), app('admin_access')))
             <li class="nav-title">{{ trans('admin.terms.item_master_data') }}</li>

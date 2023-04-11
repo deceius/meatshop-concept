@@ -150,6 +150,66 @@ class TransactionDetailsController extends EmployeeController
     }
 
 
+    public function salesForecasting(IndexInventorySalesDetail $request)
+    {
+        $filterDate = $request->input('filterDate');
+        // create and AdminListing instance for a specific model and
+        $data = AdminListing::create(TransactionDetail::class)->processRequestAndGet(
+            // pass the request with params
+            $request,
+
+            // set columns to query
+            ['brand_name', 'item_name', 'id'],
+
+            // set columns to searchIn
+            ['b.name', 'i.name', 'th.ref_no'],
+
+
+
+            function ($query) use ($request, $filterDate) {
+                $query->select(DB::raw('
+                    td.id as id,
+                    th.ref_no as transaction_ref_no,
+                    i.name as item_name,
+                    b.name as brand_name,
+                    td.amount as unit_price,
+                    sum(td.quantity) as quantity_sold,
+                    sum(td.selling_price) as price_sold,
+                    th.updated_at as last_update'));
+                $query->from( 'transaction_details as td');
+                $query->where('th.branch_id', app('user_branch_id'));
+                $query->where('th.status', 1);
+                $query->where('th.transaction_type_id', 2);
+                $query->with(['item']);
+                $query->with(['item.brand']);
+                $query->join('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id');
+                $query->join('items as i', 'i.id', '=', 'td.item_id');
+                $query->join('brands as b', 'i.brand_id', '=', 'b.id');
+
+                if ($filterDate) {
+                    $query->where(DB::raw('datediff(th.updated_at, CAST(\''. $filterDate .'\' as date))'), 0);
+                }
+                $query->groupBy('th.id');
+                $query->groupBy('td.amount');
+                $query->groupBy('td.item_id');
+                // dd($query->toSql());
+
+            }
+        );
+
+        if ($request->ajax()) {
+            if ($request->has('bulk')) {
+                return [
+                    'bulkItems' => $data->pluck('id')
+                ];
+            }
+            return ['data' => $data];
+        }
+
+
+        return view('report.analytics', ['data' => $data]);
+    }
+
     public function headerDetails(HeaderTransactionDetail $request, $transactionHeaderId)
     {
 
