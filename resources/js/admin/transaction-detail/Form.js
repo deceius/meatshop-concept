@@ -19,13 +19,15 @@ Vue.component('transaction-detail-form', {
                 sale_type:  '' ,
                 updated_by:  '' ,
 
-            }
+            },
+            htmlQRScanner:  new Html5QrcodeScanner("reader", { fps: 10, qrbox: 250 })
         }
     },
     methods: {
         setQRCode: function(decodedText, decodedResult) {
             this.form.qr_code = decodedText;
             this.getInventoryFromQR(decodedText)
+            document.getElementById("html5-qrcode-button-camera-stop").click();
 
         },
 
@@ -49,6 +51,9 @@ Vue.component('transaction-detail-form', {
                     }
                 );
             }
+            else {
+                this.$notify({ type: 'success', title: 'Success!', text: 'QR Code scanned!'});
+            }
         },
         changeSaleType() {
             axios.get('/app/transaction-details/get-qr?qr_code=' + this.form.qr_code + '&sale_type=' + this.form.sale_type+ '&headerId=' + this.transactionHeaderId).then(
@@ -68,9 +73,7 @@ Vue.component('transaction-detail-form', {
         if (this.item.id != null){
             this.form.item = this.item;
         }
-        var html5QrcodeScanner = new Html5QrcodeScanner(
-            "reader", { fps: 10, qrbox: 250 });
-        html5QrcodeScanner.render(this.setQRCode);
+        this.htmlQRScanner.render(this.setQRCode);
 
     }
 
