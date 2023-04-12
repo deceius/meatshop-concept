@@ -18,6 +18,7 @@ use App\Models\TransactionDetail;
 use App\Models\Item;
 use App\Models\Price;
 use App\Models\TransactionHeader;
+use App\Models\Transfer;
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -343,6 +344,15 @@ class TransactionDetailsController extends EmployeeController
 
         $transactionHeader = TransactionHeader::where('id', $transactionDetail->transaction_header_id)->first();
         $transactionDetail->load('item');
+        $transactionDetail->item->brand_name = $transactionDetail->item->brand->name;
+
+        if ($transactionHeader->transaction_type_id == 4){
+            $transfer = Transfer::where('delivery_transaction_id', $transactionHeader->id)->first();
+            $pulloutTransactionDetail = TransactionDetail::where('transaction_header_id', $transfer->pullout_transaction_id)
+                                        ->where('item_id', $transactionDetail->item_id)
+                                        ->where('qr_code', $transactionDetail->qr_code)->first();
+            $transactionDetail->transferred_quantity = $pulloutTransactionDetail->quantity;
+        }
 
         $items = Item::join('brands', 'brands.id', '=', 'items.brand_id')->select('items.*')->get();
         foreach ($items as $i){
@@ -353,7 +363,10 @@ class TransactionDetailsController extends EmployeeController
         }
 
         return view('admin.transaction-detail.edit', [
-            'transactionDetail' => $transactionDetail,'items' => $items, 'transactionType' => $transactionHeader->transaction_type_id,
+            'transactionDetail' => $transactionDetail,
+            'items' => $items,
+            'transactionHeaderId' => $transactionDetail->transaction_header_id,
+            'transactionType' => $transactionHeader->transaction_type_id,
         ]);
     }
 

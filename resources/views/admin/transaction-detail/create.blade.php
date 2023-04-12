@@ -38,7 +38,7 @@ inline-template>
                             @include('admin.transaction-detail.components.delivery-form')
                             @break
                         @default
-
+                            @break
                     @endswitch
                 </div>
 

@@ -69,11 +69,12 @@ Vue.component('transaction-detail-form', {
         if (this.transactionType == 1) {
             this.form.current_weight = 9999999999;
         }
-        this.form.transaction_header_id = this.transactionHeaderId
+        this.form.transaction_header_id = this.transactionHeaderId;
+
+        this.htmlQRScanner.render(this.setQRCode);
         if (this.item.id != null){
             this.form.item = this.item;
         }
-        this.htmlQRScanner.render(this.setQRCode);
 
     }
 

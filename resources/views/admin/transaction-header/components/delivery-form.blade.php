@@ -37,6 +37,7 @@
     </div>
 </div>
 
+
 <div class="form-group row align-items-center" :class="{'has-danger': errors.has('delivered_by'), 'has-success': fields.delivered_by && fields.delivered_by.valid }">
     <label for="delivered_by" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ trans('admin.'.$transactionType.'.columns.delivered_by') }}</label>
     <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">

@@ -1,6 +1,6 @@
 @extends('brackets/admin-ui::admin.layout.default')
 
-@section('title', trans('admin.transaction-detail.actions.edit', ['name' => $transactionDetail->id]))
+@section('title', trans('admin.transaction-detail.actions.edit', ['name' => 'Detail']))
 
 @section('body')
 
@@ -16,11 +16,14 @@
 
 
                     <div class="card-header">
-                        <i class="fa fa-pencil"></i> {{ trans('admin.transaction-detail.actions.edit', ['name' => $transactionDetail->id]) }}
+                        <i class="fa fa-pencil"></i> {{ trans('admin.transaction-detail.actions.edit', ['name' => 'Detail']) }}
+                        <a class="btn btn-primary btn-spinner btn-sm pull-right m-b-0" href="{{ url('app/transaction-headers/'.$transactionHeaderId.'/edit') }}" role="button"><i class="fa fa-edit"></i>&nbsp; Return to Transaction</a>
+
                         </div>
 
 
                     <div class="card-body">
+
                         @include('admin.transaction-detail.components.qrscanner')
                         @switch($transactionType)
                         @case(1)
@@ -29,9 +32,16 @@
                         @case(2)
                             @include('admin.transaction-detail.components.sales-form')
                             @break
+                        @case(3)
+                            @include('admin.transaction-detail.components.pullout-form')
+                            @break
+                        @case(4)
+                            @include('admin.transaction-detail.components.delivery-form')
+                            @break
                         @default
-
+                            @break
                     @endswitch
+
                     </div>
 
 
