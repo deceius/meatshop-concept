@@ -343,6 +343,10 @@ class TransactionDetailsController extends EmployeeController
         $this->authorize('admin.transaction-detail.edit', $transactionDetail);
 
         $transactionHeader = TransactionHeader::where('id', $transactionDetail->transaction_header_id)->first();
+
+        if ($transactionHeader->transaction_type_id != 4){
+            abort(400, 'Forbidden');
+        }
         $transactionDetail->load('item');
         $transactionDetail->item->brand_name = $transactionDetail->item->brand->name;
 
@@ -387,7 +391,7 @@ class TransactionDetailsController extends EmployeeController
 
         if ($request->ajax()) {
             return [
-                'redirect' => url('app/transaction-headers'),
+                'redirect' => url('app/transaction-headers/'.$transactionDetail->transaction_header_id.'/edit').'?type=4',
                 'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
             ];
         }

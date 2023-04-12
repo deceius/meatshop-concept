@@ -26,9 +26,8 @@ class UpdateTransactionDetail extends FormRequest
     public function rules(): array
     {
         return [
-            'transaction_header_id' => ['required'],
-            'item' => ['required'],
-
+            'quantity' => ['sometimes'],
+            'amount' => ['sometimes'],
         ];
     }
 
