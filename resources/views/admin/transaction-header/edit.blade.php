@@ -28,11 +28,11 @@
 
 
                     <div class="card-footer">
-                        <button v-show="{{ $transactionHeader->status }} == 0 && isReadOnly == 0" type="submit" class="btn btn-primary" :disabled="submiting">
+                        <button v-show="{{ $transactionHeader->status }} == 0 && {{ $transactionHeader->branch_id}} == {{ app('user_branch_id') }}" type="submit" class="btn btn-primary" :disabled="submiting">
                             <i class="fa" :class="submiting ? 'fa-spinner' : 'fa-download'"></i>
                             Update
                         </button>
-                            <button v-show="{{ $transactionHeader->status }} == 0 && isReadOnly == 0" type="button" class="btn btn-danger" :disabled="submiting" @click="finalize(data.resource_url)">
+                            <button v-show="{{ $transactionHeader->status }} == 0 && {{ $transactionHeader->branch_id}} == {{ app('user_branch_id') }}" type="button" class="btn btn-danger" :disabled="submiting" @click="finalize(data.resource_url)">
                                 <i class="fa" :class="submiting ? 'fa-spinner' : 'fa-edit'"></i>
                                 Finalize
                         </button>

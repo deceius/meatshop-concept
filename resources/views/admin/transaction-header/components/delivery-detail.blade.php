@@ -37,11 +37,11 @@ inline-template>
                                 <td>@{{ item.amount }}</td>
                                 <td>
                                     <div class="row no-gutters">
-                                        <div class="col-auto" v-show="({{ $transactionHeader->transaction_type_id }} == 4 && {{ $transactionHeader->status }} == 0 ) || isReadonly == 1">
+                                        <div class="col-auto" v-show="{{ $transactionHeader->status }} == 0  && {{ $transactionHeader->branch_id}} == {{ app('user_branch_id') }}">
                                             <a class="btn btn-sm btn-spinner btn-info" :href="item.resource_url + '/edit'" title="Validate Delivery" role="button"><i class="fa fa-edit"></i></a>
                                         </div>
                                         <form class="col" @submit.prevent="deleteItem(item.resource_url)">
-                                            <button type="submit" v-show="({{ $transactionHeader->transaction_type_id }} != 4 && {{ $transactionHeader->status }} == 0 ) || isReadonly == 1" class="btn btn-sm btn-danger" title="{{ trans('brackets/admin-ui::admin.btn.delete') }}"><i class="fa fa-trash-o"></i></button>
+                                            <button type="submit" v-show="{{ $transactionHeader->status }} == 0 && {{ $transactionHeader->branch_id}} == {{ app('user_branch_id') }}" class="btn btn-sm btn-danger" title="{{ trans('brackets/admin-ui::admin.btn.delete') }}"><i class="fa fa-trash-o"></i></button>
                                         </form>
                                     </div>
                                 </td>

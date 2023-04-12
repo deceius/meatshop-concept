@@ -9,7 +9,7 @@ inline-template>
             <div class="card-header">
                 <i class="fa fa-align-justify"></i> {{ trans('admin.transaction-detail.actions.index') }}
 
-                <a v-show="{{ $transactionHeader->status }} == 0 | isReadOnly == 1" class="btn btn-primary btn-spinner btn-sm pull-right m-b-0" href="{{ url('app/transaction-details/create') }}?txnId={{ $transactionHeader->id }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.transaction-detail.actions.create') }}</a>
+                <a v-show="{{ $transactionHeader->status }} == 0 && {{ $transactionHeader->branch_id}} == {{ app('user_branch_id') }}" class="btn btn-primary btn-spinner btn-sm pull-right m-b-0" href="{{ url('app/transaction-details/create') }}?txnId={{ $transactionHeader->id }}" role="button"><i class="fa fa-plus"></i>&nbsp; {{ trans('admin.transaction-detail.actions.create') }}</a>
             </div>
             <div class="card-body" v-cloak>
                 <div class="card-block">
@@ -35,11 +35,8 @@ inline-template>
                                 <td>@{{ item.amount }}</td>
                                 <td>
                                     <div class="row no-gutters">
-                                        <div class="col-auto" v-show="({{ $transactionHeader->transaction_type_id }} == 4 && {{ $transactionHeader->status }} == 0 ) || isReadOnly">
-                                            <a class="btn btn-sm btn-spinner btn-info" :href="item.resource_url + '/edit'" title="Validate Delivery" role="button"><i class="fa fa-edit"></i></a>
-                                        </div>
                                         <form class="col" @submit.prevent="deleteItem(item.resource_url)">
-                                            <button type="submit" v-show="{{ $transactionHeader->status }} == 0 || isReadOnly" class="btn btn-sm btn-danger" title="{{ trans('brackets/admin-ui::admin.btn.delete') }}"><i class="fa fa-trash-o"></i></button>
+                                            <button type="submit" v-show="{{ $transactionHeader->status }} == 0 && {{ $transactionHeader->branch_id}} == {{ app('user_branch_id') }}" class="btn btn-sm btn-danger" title="{{ trans('brackets/admin-ui::admin.btn.delete') }}"><i class="fa fa-trash-o"></i></button>
                                         </form>
                                     </div>
                                 </td>
