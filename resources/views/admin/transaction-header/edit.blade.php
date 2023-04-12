@@ -45,8 +45,14 @@
 
         </div>
 
+        @if ($transactionHeader->transaction_type_id == 4)
 
-        @include('admin.transaction-header.components.transaction-detail')
+            @include('admin.transaction-header.components.delivery-detail')
+        @else
+
+            @include('admin.transaction-header.components.transaction-detail')
+        @endif
+
 </div>
 
 @endsection
