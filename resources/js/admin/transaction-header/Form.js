@@ -30,7 +30,8 @@ Vue.component('transaction-header-form', {
     },
     methods: {
         selectCustomer() {
-            axios.get('/app/transaction-headers/get/traders?agent_ids=' + this.form.customer.agent_ids.toString().replace(/^\[(.+)\]$/,'$1')).then(
+            var agentIds = (this.form.customer) ? this.form.customer.agent_ids : 0;
+            axios.get('/app/transaction-headers/get/traders?agent_ids=' + agentIds.toString().replace(/^\[(.+)\]$/,'$1')).then(
                 response => {
                     this.form.traders = response.data.traders;
                 }
@@ -72,9 +73,7 @@ Vue.component('transaction-header-form', {
         }
     },
     mounted: function (){
-
         this.form.branch = this.currentBranch;
-
 
         if (this.type > 0) {
             this.form.transaction_type_id = this.type

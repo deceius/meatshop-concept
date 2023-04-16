@@ -219,6 +219,12 @@ class TransactionHeadersController extends EmployeeController
 
         $transactionHeader->load('branch');
         $transactionHeader->load('customer');
+        if ($transactionHeader->customer){
+            $traderIds = json_decode($transactionHeader->customer->agent_ids);
+            $traders = Trader::whereIn('id', $traderIds)->get();
+            $transactionHeader->traders = collect($traders)->pluck('trader_name')->toArray();
+        }
+
         $deliveryBranch = new Branch();
         if ($transactionHeader->transaction_type_id == 3){
             $transfer = Transfer::where('pullout_transaction_id', $transactionHeader->id)->first();
@@ -290,7 +296,13 @@ class TransactionHeadersController extends EmployeeController
         $sanitized['updated_by'] = Auth::user()->email;
 
         if ($transactionHeader->transaction_type_id == 2){
-            $sanitized['customer_id'] = $request->getCustomerId();
+            if ($sanitized['customer']){
+                $sanitized['customer_id'] = $request->getCustomerId();
+
+            }
+            else {
+                $sanitized['customer_id'] = 0;
+            }
         }
 
         // Update changed values TransactionHeader
