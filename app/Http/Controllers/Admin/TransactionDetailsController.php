@@ -456,12 +456,13 @@ class TransactionDetailsController extends EmployeeController
                 abort(404, 'Price settings are not set. Contact your administrator to configure the item price.');
             }
 
-            if ($request->input('sale_type') == 'Wholesale'){
-                $price = $price->box_amount;
-            }
-            else {
+            if ($request->input('sale_type') == 'Retail'){
                 $price = $price->cut_amount;
             }
+            else {
+                $price = $price->box_amount;
+            }
+
             $item = Item::where('id', $itemInventory->item_id)->first();
             $item->load('brand');
             $item->brand_name = $item->brand->name;

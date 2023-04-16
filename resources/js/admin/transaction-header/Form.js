@@ -23,19 +23,18 @@ Vue.component('transaction-header-form', {
                 created_by:  '' ,
                 updated_by:  '' ,
                 traders: '',
-                customer: ''
+                payment_account_name: '',
+                payment_ref_no: ''
 
             }
         }
     },
     methods: {
-        selectCustomer() {
-            var agentIds = (this.form.customer) ? this.form.customer.agent_ids : 0;
-            axios.get('/app/transaction-headers/get/traders?agent_ids=' + agentIds.toString().replace(/^\[(.+)\]$/,'$1')).then(
-                response => {
-                    this.form.traders = response.data.traders;
-                }
-            );
+        validateIfCash() {
+           if (this.form.payment_id == 'Cash'){
+            this.form.payment_account_name = '';
+            this.form.payment_ref_no = '';
+           }
         },
         isDraft() {
             return this.form.status == 0;

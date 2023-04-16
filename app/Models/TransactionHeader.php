@@ -19,7 +19,9 @@ class TransactionHeader extends Model
         'payment_id',
         'created_by',
         'updated_by',
-        'status'
+        'status',
+        'payment_account_name',
+        'payment_ref_no'
     ];
 
     protected $dates = [

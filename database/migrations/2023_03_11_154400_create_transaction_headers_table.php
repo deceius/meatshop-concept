@@ -24,10 +24,12 @@ return new class extends Migration
             $table->string('remarks');
             $table->bigInteger('customer_id');
             $table->string('customer_category');
-            $table->bigInteger('payment_id');
+            $table->string('payment_id');
             $table->integer('status'); // status 0 - pending / editable, 1 - posted, 2 - approved
             $table->string('created_by');
-            $table->string('updated_by');
+            $table->string('updated_by')->nullable();
+            $table->string('payment_ref_no')->nullable();
+            $table->string('payment_account_number')->nullable();
             $table->timestamps();
         });
     }

@@ -47,6 +47,9 @@ class StoreTransactionHeader extends FormRequest
                         'customer' => ['sometimes'],
                         'transaction_type_id' => ['required'],
                         'customer_category' => ['required'],
+                        'payment_id' => ['sometimes'],
+                        'payment_account_name' => ['sometimes', 'nullable'],
+                        'payment_ref_no' => ['sometimes', 'nullable']
 
                     ];
                     break;

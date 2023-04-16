@@ -172,6 +172,7 @@ class TransactionHeadersController extends EmployeeController
         $transactionHeader = TransactionHeader::create($sanitized);
         if ($transactionHeader->transaction_type_id == 2){
             $transactionHeader->customer_id = $request->getCustomerId();
+
             $transactionHeader->update();
         }
 
@@ -298,8 +299,8 @@ class TransactionHeadersController extends EmployeeController
         if ($transactionHeader->transaction_type_id == 2){
             if ($sanitized['customer']){
                 $sanitized['customer_id'] = $request->getCustomerId();
-
             }
+
             else {
                 $sanitized['customer_id'] = 0;
             }
