@@ -206,6 +206,7 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
         Route::prefix('transaction-headers')->name('transaction-headers/')->group(static function() {
             Route::get('/{type}',                                             'TransactionHeadersController@index')->name('index');
             Route::get('/create/{type}',                                       'TransactionHeadersController@create')->name('create');
+            Route::get('/get/traders',                                       'TransactionHeadersController@getTraders')->name('get-traders');
             Route::post('/',                                            'TransactionHeadersController@store')->name('store');
             Route::get('/{transactionHeader}/edit',                     'TransactionHeadersController@edit')->name('edit');
             Route::post('/{transactionHeader}/update-status',           'TransactionHeadersController@updateStatus')->name('update-status');

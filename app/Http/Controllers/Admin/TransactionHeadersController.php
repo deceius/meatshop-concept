@@ -13,6 +13,7 @@ use App\Http\Requests\Admin\TransactionDetail\IndexTransactionDetail;
 use App\Models\AccessTier;
 use App\Models\Branch;
 use App\Models\Customer;
+use App\Models\Trader;
 use App\Models\TransactionHeader;
 use App\Models\TransactionDetail;
 use App\Models\Transfer;
@@ -29,6 +30,8 @@ use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+
+use function PHPUnit\Framework\isEmpty;
 
 class TransactionHeadersController extends EmployeeController
 {
@@ -128,7 +131,9 @@ class TransactionHeadersController extends EmployeeController
         'branches' => Branch::all(),
         'type' => $transactionType,
         'transactionType' => $transactionTypeString,
-        'customers' => $customers
+        'customers' => $customers,
+        'branch_id' => app('user_branch_id'),
+        'traders' => Trader::all()
     ]);
     }
 
@@ -265,7 +270,9 @@ class TransactionHeadersController extends EmployeeController
             'type' => $transactionType,
             'transactionType' => $transactionTypeString,
             'customers' => $customers,
-            'isReadOnly' => $isNotSameBranch ? '1' : '0'
+            'isReadOnly' => $isNotSameBranch ? '1' : '0',
+            'branch_id' => $transactionHeader->branch_id,
+            'traders' => Trader::all()
         ]);
     }
 
@@ -366,6 +373,16 @@ class TransactionHeadersController extends EmployeeController
             }
 
         }
+    }
+
+    public function getTraders(Request $request)
+    {
+        $traderIds = explode(',', $request->input('agent_ids'));
+        $traders = Trader::whereIn('id', $traderIds)->get();
+        if ($request->ajax()) {
+            return response(['traders' => collect($traders)->pluck('trader_name')->toArray()]);
+        }
+
     }
 
     public function initiateTransfer(UpdateTransactionHeader $request, TransactionHeader $transactionHeader) {

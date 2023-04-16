@@ -22,11 +22,20 @@ Vue.component('transaction-header-form', {
                 payment_id:  '' ,
                 created_by:  '' ,
                 updated_by:  '' ,
+                traders: '',
+                customer: ''
 
             }
         }
     },
     methods: {
+        selectCustomer() {
+            axios.get('/app/transaction-headers/get/traders?agent_ids=' + this.form.customer.agent_ids.toString().replace(/^\[(.+)\]$/,'$1')).then(
+                response => {
+                    this.form.traders = response.data.traders;
+                }
+            );
+        },
         isDraft() {
             return this.form.status == 0;
         },
