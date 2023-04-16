@@ -23,3 +23,27 @@
     background-color: #e7aa0b;
     border-color: #dba10b;
   }
+
+  @media (max-width: 991px) {
+    .trx-detail th,
+  .trx-detail td {
+      display: table-cell;
+    }
+    .trx-detail tr {
+        display: table-row;
+        vertical-align: inherit;
+        border-color: inherit;
+    }
+    .trx-detail th:last-of-type,
+  .trx-detail td:last-of-type,
+  .trx-detail th:nth-of-type(2),
+  .trx-detail td:nth-of-type(2) {
+      display: table-cell;
+    }
+    .trx-detail td:last-of-type {
+      padding-right: 0;
+    }
+    td:nth-of-type(2) {
+      overflow: hidden;
+    }
+  }

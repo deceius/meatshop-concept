@@ -14,7 +14,7 @@ inline-template>
             <div class="card-body" v-cloak>
                 <div class="card-block">
 
-                    <table class="table table-hover table-listing">
+                    <table class="table table-hover table-listing trx-detail">
                         <thead>
                             <tr>
 
