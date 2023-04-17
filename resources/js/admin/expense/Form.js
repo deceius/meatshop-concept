@@ -7,11 +7,12 @@ Vue.component('expense-form', {
             form: {
                 expense_name:  '' ,
                 cost:  '' ,
+                type: '',
                 branch_id:  '' ,
                 remarks:  '' ,
                 created_by:  '' ,
                 updated_by:  '' ,
-                
+
             }
         }
     }

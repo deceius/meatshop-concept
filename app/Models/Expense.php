@@ -11,6 +11,7 @@ class Expense extends Model
         'cost',
         'branch_id',
         'remarks',
+        'type',
         'created_by',
         'updated_by',
 

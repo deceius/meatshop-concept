@@ -20136,12 +20136,6 @@ div.trumbowyg-dropdown-table table td.active {
   border-color: #dba10b;
 }
 
-
-.inv-detail td:last-of-type {
-    min-width: 95px;
-    display: table-cell;
-}
-
 @media (max-width: 991px) {
   .trx-detail th,
 .trx-detail td {

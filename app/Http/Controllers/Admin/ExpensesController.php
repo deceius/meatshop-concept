@@ -10,6 +10,8 @@ use App\Http\Requests\Admin\Expense\IndexExpense;
 use App\Http\Requests\Admin\Expense\StoreExpense;
 use App\Http\Requests\Admin\Expense\UpdateExpense;
 use App\Models\Expense;
+use App\Models\TransactionDetail;
+use App\Models\TransactionHeader;
 use Brackets\AdminListing\Facades\AdminListing;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
@@ -54,6 +56,54 @@ class ExpensesController extends ManagerController
         }
 
         return view('admin.expense.index', ['data' => $data]);
+    }
+
+    public function expenseReport(IndexExpense $request)
+    {
+        // create and AdminListing instance for a specific model and
+        $data = AdminListing::create(Expense::class)->processRequestAndGet(
+            // pass the request with params
+            $request,
+
+            // set columns to query
+            ['id', 'expense_name', 'cost', 'type', 'branch_id', 'remarks', 'created_by', 'updated_by', 'created_at', 'updated_at'],
+
+            // set columns to searchIn
+            ['id', 'expense_name', 'remarks', 'created_by', 'updated_by'],
+            function ($query) {
+
+                $newQuery = TransactionHeader::from( 'transaction_headers as th')
+                            ->where('th.transaction_type_id', 1)
+                            ->leftJoin('transaction_details as td', 'th.id', '=', 'td.transaction_header_id')
+                            ->where('th.branch_id', app('user_branch_id'))
+                            ->groupBy('th.id')
+                            ->select(DB::raw(
+                                'th.id,
+                                CONCAT(\'Receiving Transaction - \',  th.ref_no) as expense_name,
+                                sum(td.amount) as cost,
+                                 \'Receiving\' as \'type\',
+                                 th.branch_id,
+                                 th.remarks,
+                                 th.created_by,
+                                 th.updated_by,
+                                 th.created_at,
+                                 th.updated_at'
+                                ));
+
+                $query->union($newQuery);
+            }
+        );
+
+        if ($request->ajax()) {
+            if ($request->has('bulk')) {
+                return [
+                    'bulkItems' => $data->pluck('id')
+                ];
+            }
+            return ['data' => $data];
+        }
+
+        return view('admin.expense.report', ['data' => $data]);
     }
 
     /**
