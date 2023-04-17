@@ -39,7 +39,7 @@
                                 </div>
                             </form>
 
-                            <table class="table table-hover table-listing">
+                            <table class="table table-hover table-listing inv-detail">
                                 <thead>
                                     <tr>
                                         <th class="bulk-checkbox">
@@ -58,7 +58,6 @@
                                         <th is='sortable' :column="'outgoing'">Out</th>
                                         <th is='sortable' :column="'current_inventory'">Current</th>
 
-                                        <th></th>
                                     </tr>
                                     <tr v-show="(clickedBulkItemsCount > 0) || isClickedAll">
                                         <td class="bg-bulk-info d-table-cell text-center" colspan="11">
@@ -89,16 +88,6 @@
                                         <td>@{{ item.outgoing }}</td>
                                         <td>@{{ item.current_inventory }}</td>
 
-                                        <td>
-                                            <div class="row no-gutters">
-                                                {{-- <div class="col-auto">
-                                                    <a class="btn btn-sm btn-spinner btn-info" :href="item.resource_url + '/edit'" title="{{ trans('brackets/admin-ui::admin.btn.edit') }}" role="button"><i class="fa fa-edit"></i></a>
-                                                </div>
-                                                <form class="col" @submit.prevent="deleteItem(item.resource_url)">
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="{{ trans('brackets/admin-ui::admin.btn.delete') }}"><i class="fa fa-trash-o"></i></button>
-                                                </form> --}}
-                                            </div>
-                                        </td>
                                     </tr>
                                 </tbody>
                             </table>

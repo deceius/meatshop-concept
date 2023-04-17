@@ -20158,4 +20158,22 @@ div.trumbowyg-dropdown-table table td.active {
   td:nth-of-type(2) {
     overflow: hidden;
   }
+  /****/
+  .inv-detail tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+  }
+  .inv-detail th:last-of-type,
+.inv-detail td:last-of-type,
+.inv-detail th:nth-of-type(3),
+.inv-detail td:nth-of-type(3),
+.inv-detail th:nth-of-type(4),
+.inv-detail td:nth-of-type(4) {
+    display: table-cell;
+  }
+  .inv-detail th:nth-of-type(2),
+.inv-detail td:nth-of-type(2) {
+    display: none;
+  }
 }

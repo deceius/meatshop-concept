@@ -26,24 +26,46 @@
 
   @media (max-width: 991px) {
     .trx-detail th,
-  .trx-detail td {
-      display: table-cell;
-    }
-    .trx-detail tr {
+    .trx-detail td {
+        display: table-cell;
+      }
+      .trx-detail tr {
         display: table-row;
         vertical-align: inherit;
         border-color: inherit;
+      }
+      .trx-detail th:last-of-type,
+    .trx-detail td:last-of-type,
+    .trx-detail th:nth-of-type(2),
+    .trx-detail td:nth-of-type(2) {
+        display: table-cell;
+      }
+      .trx-detail td:last-of-type {
+        padding-right: 0;
+      }
+      td:nth-of-type(2) {
+        overflow: hidden;
+      }
+
+
+
+      /****/
+
+      .inv-detail tr {
+        display: table-row;
+        vertical-align: inherit;
+        border-color: inherit;
+      }
+      .inv-detail th:last-of-type,
+    .inv-detail td:last-of-type,
+    .inv-detail th:nth-of-type(3),
+    .inv-detail td:nth-of-type(3),
+    .inv-detail th:nth-of-type(4),
+    .inv-detail td:nth-of-type(4) {
+        display: table-cell;
+      }
+      .inv-detail th:nth-of-type(2),
+      .inv-detail td:nth-of-type(2) {
+          display: none;
+      }
     }
-    .trx-detail th:last-of-type,
-  .trx-detail td:last-of-type,
-  .trx-detail th:nth-of-type(2),
-  .trx-detail td:nth-of-type(2) {
-      display: table-cell;
-    }
-    .trx-detail td:last-of-type {
-      padding-right: 0;
-    }
-    td:nth-of-type(2) {
-      overflow: hidden;
-    }
-  }
