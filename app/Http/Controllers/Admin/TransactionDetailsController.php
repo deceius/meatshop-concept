@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\DailySalesReportExport;
 use App\Exports\InventoryExport;
 use App\Exports\PricesExport;
 use App\Exports\SalesReportExport;
@@ -14,12 +15,14 @@ use App\Http\Requests\Admin\TransactionDetail\IndexInventorySalesDetail;
 use App\Http\Requests\Admin\TransactionDetail\IndexTransactionDetail;
 use App\Http\Requests\Admin\TransactionDetail\StoreTransactionDetail;
 use App\Http\Requests\Admin\TransactionDetail\UpdateTransactionDetail;
+use App\Models\Branch;
 use App\Models\TransactionDetail;
 use App\Models\Item;
 use App\Models\Price;
 use App\Models\TransactionHeader;
 use App\Models\Transfer;
 use Brackets\AdminListing\Facades\AdminListing;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -151,80 +154,30 @@ class TransactionDetailsController extends EmployeeController
     }
 
 
-    public function salesForecasting(IndexInventorySalesDetail $request)
+    public function salesForecasting(Request $request)
     {
-        // $filterDate = $request->input('filterDate');
-        // // create and AdminListing instance for a specific model and
-        // $data = AdminListing::create(TransactionDetail::class)->processRequestAndGet(
-        //     // pass the request with params
-        //     $request,
+        $months = $this->createMonthArray();
+        $data = [];
+        $items = Item::from('items as i')
+                ->join('brands as b', 'i.brand_id', '=', 'b.id');
 
-        //     // set columns to query
-        //     ['brand_name', 'item_name', 'id'],
+        foreach ($items as $item){
+            $result = [
+                'item_id' => $item->id,
+            ];
+            foreach($months as $m){
 
-        //     // set columns to searchIn
-        //     ['b.name', 'i.name', 'th.ref_no'],
+            }
+        }
 
+    }
 
-
-        //     function ($query) use ($request, $filterDate) {
-        //         $query->select(DB::raw('
-        //             td.id as id,
-        //             th.ref_no as transaction_ref_no,
-        //             i.name as item_name,
-        //             b.name as brand_name,
-        //             td.amount as unit_price,
-        //             sum(td.quantity) as quantity_sold,
-        //             sum(td.selling_price) as price_sold,
-        //             th.updated_at as last_update'));
-        //         $query->from( 'transaction_details as td');
-        //         $query->where('th.branch_id', app('user_branch_id'));
-        //         $query->where('th.status', 1);
-        //         $query->where('th.transaction_type_id', 2);
-        //         $query->with(['item']);
-        //         $query->with(['item.brand']);
-        //         $query->join('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id');
-        //         $query->join('items as i', 'i.id', '=', 'td.item_id');
-        //         $query->join('brands as b', 'i.brand_id', '=', 'b.id');
-
-        //         if ($filterDate) {
-        //             $query->where(DB::raw('datediff(th.updated_at, CAST(\''. $filterDate .'\' as date))'), 0);
-        //         }
-        //         $query->groupBy('th.id');
-        //         $query->groupBy('td.amount');
-        //         $query->groupBy('td.item_id');
-        //         // dd($query->toSql());
-
-        //     }
-        // );
-
-        // if ($request->ajax()) {
-        //     if ($request->has('bulk')) {
-        //         return [
-        //             'bulkItems' => $data->pluck('id')
-        //         ];
-        //     }
-        //     return ['data' => $data];
-        // }
-
-
-        // return view('report.analytics', ['data' => $data]);
-        // Define the subquery
-            $subquery = DB::table('transaction_details as td')
-            ->join('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id')
-            ->select(DB::raw("DATE_FORMAT(th.transaction_date, '%M') AS sales_month, SUM(td.amount) AS total_sales"))
-            ->where('th.transaction_date', '>=', DB::raw('(SELECT MIN(th.transaction_date) FROM transaction_headers)'))
-            ->groupBy(DB::raw("DATE_FORMAT(th.transaction_date, '%Y-%m')"))
-            ->from('transaction_details as td');
-
-            // Perform the main query
-            $results = DB::table(DB::raw("({$subquery->toSql()}) as subquery"))
-            ->select('sales_month', DB::raw('AVG(total_sales) AS seasonal_sales'))
-            ->groupBy('sales_month')
-            ->orderBy('sales_month')
-            ->get();
-
-            return $results;
+    public function createMonthArray() {
+        $months = [];
+        for ($m=1; $m<=12; $m++) {
+            $month[] = date('m', mktime(0,0,0,$m, 1, date('Y')));
+        }
+        return $months;
     }
 
     public function headerDetails(HeaderTransactionDetail $request, $transactionHeaderId)
@@ -518,11 +471,23 @@ class TransactionDetailsController extends EmployeeController
      */
     public function export(): ?BinaryFileResponse
     {
-        return Excel::download(app(InventoryExport::class), 'inventory.xlsx');
+        $branch = Branch::where('id', app('user_branch_id'))->first();
+        $ddate = Carbon::now()->format("ym-dHis");
+        $file_name = 'Inventory_' . $ddate . '_' . $branch->name;
+        return Excel::download(app(InventoryExport::class), $file_name.'.xlsx');
     }
 
     public function salesReportExport(): ?BinaryFileResponse
     {
-        return Excel::download(app(SalesReportExport::class), 'sales_report.xlsx');
+        $branch = Branch::where('id', app('user_branch_id'))->first();
+        $ddate = Carbon::now()->format("ym-dHis");
+        $file_name = 'SalesReport_' . $ddate . '_' . $branch->name;
+        return Excel::download(app(SalesReportExport::class), $file_name.'.xlsx');
+    }
+
+    public function getDailyReports(Request $request){
+        $ddate = Carbon::now()->format("ym-dHis");
+        $file_name = 'SalesReport_' . $ddate . '_all';
+        return Excel::download(app(DailySalesReportExport::class), $file_name.'.xlsx');
     }
 }

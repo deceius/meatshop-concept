@@ -3,7 +3,9 @@
 namespace App\Console\Commands;
 
 use App\Mail\DailyReports;
+use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
 
 class SendDailyReport extends Command
@@ -13,7 +15,7 @@ class SendDailyReport extends Command
      *
      * @var string
      */
-    protected $signature = 'mail:send';
+    protected $signature = 'daily:send';
 
     /**
      * The console command description.
@@ -29,7 +31,20 @@ class SendDailyReport extends Command
      */
     public function handle()
     {
-        Mail::to('julius.decena3095@gmail.com')->send(new DailyReports());
-        return Command::SUCCESS;
+        $date = Carbon::now()->format('Y-m-d');
+        $postRequest = [
+            'auth_token' => '50e2a95a98368134-97dde539d4f9799b-d226545ad2ca6d5a',
+            'from'=> '20P73aqnAOJIazs8HsYM6A==',
+            'type'=> 'text',
+            'text' => 'Kumpadres Daily Sales Reports is ready. Login to access the file. ' . url('/download-report?date='.$date)
+        ];
+        $url = 'https://chatapi.viber.com/pa/post';
+        $response = Http::post($url, $postRequest);
+        if ($response->ok()) {
+            return Command::SUCCESS;
+        }
+
+        return Command::FAILURE;
+
     }
 }

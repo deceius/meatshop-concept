@@ -20136,6 +20136,10 @@ div.trumbowyg-dropdown-table table td.active {
   border-color: #dba10b;
 }
 
+.inv-detail td:last-of-type {
+  min-width: 95px;
+}
+
 @media (max-width: 991px) {
   .trx-detail th,
 .trx-detail td {
@@ -20158,6 +20162,9 @@ div.trumbowyg-dropdown-table table td.active {
   td:nth-of-type(2) {
     overflow: hidden;
   }
+  .inv-detail td:last-of-type {
+    min-width: 95px;
+  }
   /****/
   .inv-detail tr {
     display: table-row;
@@ -20174,6 +20181,48 @@ div.trumbowyg-dropdown-table table td.active {
   }
   .inv-detail th:nth-of-type(2),
 .inv-detail td:nth-of-type(2) {
+    display: none;
+  }
+  /****/
+  .exp-detail tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+  }
+  .exp-detail th:nth-of-type(1),
+.exp-detail td:nth-of-type(1),
+.exp-detail th:nth-of-type(2),
+.exp-detail td:nth-of-type(2),
+.exp-detail th:nth-of-type(3),
+.exp-detail td:nth-of-type(3),
+.exp-detail th:nth-of-type(4),
+.exp-detail td:nth-of-type(4) {
+    display: table-cell;
+  }
+  .exp-detail th:last-of-type,
+.exp-detail td:last-of-type {
+    display: none;
+  }
+  /****/
+  .item-sales-detail tr {
+    display: table-row;
+    vertical-align: inherit;
+    border-color: inherit;
+  }
+.item-sales-detail th:nth-of-type(2),
+.item-sales-detail td:nth-of-type(2),
+.item-sales-detail th:nth-of-type(3),
+.item-sales-detail td:nth-of-type(3),
+.item-sales-detail th:nth-of-type(4),
+.item-sales-detail td:nth-of-type(4),
+.item-sales-detail th:nth-of-type(5),
+.item-sales-detail td:nth-of-type(5) {
+    display: table-cell;
+  }
+  .item-sales-detail th:nth-of-type(1),
+  .item-sales-detail td:nth-of-type(1),
+  .item-sales-detail th:last-of-type,
+.item-sales-detail td:last-of-type {
     display: none;
   }
 }

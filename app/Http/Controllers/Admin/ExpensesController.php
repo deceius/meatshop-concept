@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Exports\SalesExpenseExport;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ManagerController;
 use App\Http\Requests\Admin\Expense\BulkDestroyExpense;
@@ -9,10 +10,12 @@ use App\Http\Requests\Admin\Expense\DestroyExpense;
 use App\Http\Requests\Admin\Expense\IndexExpense;
 use App\Http\Requests\Admin\Expense\StoreExpense;
 use App\Http\Requests\Admin\Expense\UpdateExpense;
+use App\Models\Branch;
 use App\Models\Expense;
 use App\Models\TransactionDetail;
 use App\Models\TransactionHeader;
 use Brackets\AdminListing\Facades\AdminListing;
+use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -22,6 +25,8 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
+use Maatwebsite\Excel\Facades\Excel;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class ExpensesController extends ManagerController
 {
@@ -60,6 +65,8 @@ class ExpensesController extends ManagerController
 
     public function expenseReport(IndexExpense $request)
     {
+        $filterDate = $request->input('filterDate');
+
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(Expense::class)->processRequestAndGet(
             // pass the request with params
@@ -69,28 +76,54 @@ class ExpensesController extends ManagerController
             ['id', 'expense_name', 'cost', 'type', 'branch_id', 'remarks', 'created_by', 'updated_by', 'created_at', 'updated_at'],
 
             // set columns to searchIn
-            ['id', 'expense_name', 'remarks', 'created_by', 'updated_by'],
-            function ($query) {
-
-                $newQuery = TransactionHeader::from( 'transaction_headers as th')
+            [],
+            function ($query) use ($filterDate){
+                $receivingQueries = TransactionHeader::from( 'transaction_headers as th')
                             ->where('th.transaction_type_id', 1)
                             ->leftJoin('transaction_details as td', 'th.id', '=', 'td.transaction_header_id')
+                            ->join('branches as b', 'b.id', '=', 'th.branch_id')
                             ->where('th.branch_id', app('user_branch_id'))
                             ->groupBy('th.id')
                             ->select(DB::raw(
                                 'th.id,
-                                CONCAT(\'Receiving Transaction - \',  th.ref_no) as expense_name,
+                                th.ref_no as expense_name,
                                 sum(td.amount) as cost,
+                                0 as sales,
                                  \'Receiving\' as \'type\',
-                                 th.branch_id,
+                                 b.name as branch_name,
                                  th.remarks,
-                                 th.created_by,
-                                 th.updated_by,
-                                 th.created_at,
-                                 th.updated_at'
+                                 th.created_at'
                                 ));
 
-                $query->union($newQuery);
+
+                $salesQuery = TransactionHeader::from( 'transaction_headers as th')
+                                ->where('th.transaction_type_id', 2)
+                                ->leftJoin('transaction_details as td', 'th.id', '=', 'td.transaction_header_id')
+                                ->join('branches as b', 'b.id', '=', 'th.branch_id')
+                                ->where('th.branch_id', app('user_branch_id'))
+                                ->groupBy('th.id')
+                                ->select(DB::raw(
+                                    'th.id,
+                                    th.ref_no as expense_name,
+                                    0 as cost,
+                                    IFNULL(sum(td.selling_price), 0) as sales,
+                                     \'Sales\' as \'type\',
+                                     b.name as branch_name,
+                                     th.remarks,
+                                     th.created_at'
+                                    ));
+
+                if ($filterDate) {
+                    $query->where(DB::raw('datediff(e.created_at, CAST(\''. $filterDate .'\' as date))'), 0);
+                    $receivingQueries->where(DB::raw('datediff(th.created_at, CAST(\''. $filterDate .'\' as date))'), 0);
+                    $salesQuery->where(DB::raw('datediff(th.created_at, CAST(\''. $filterDate .'\' as date))'), 0);
+                }
+                $query->union($receivingQueries);
+                $query->union($salesQuery);
+                $query->select(DB::raw('e.id, CONCAT(expense_name) as expense_name, cost, 0 as sales, type, b.name as branch_name, remarks, e.created_at'));
+                $query->from('expenses as e');
+                $query->where('e.branch_id', app('user_branch_id'));
+                $query->join('branches as b', 'b.id', '=', 'e.branch_id');
             }
         );
 
@@ -236,4 +269,18 @@ class ExpensesController extends ManagerController
 
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
     }
+
+    /**
+     * Export entities
+     *
+     * @return BinaryFileResponse|null
+     */
+    public function export(): ?BinaryFileResponse
+    {
+        $branch = Branch::where('id', app('user_branch_id'))->first();
+        $ddate = Carbon::now()->format("ym-dHis");
+        $file_name = 'SalesExpensesReport_' . $ddate . '_' . $branch->name;
+        return Excel::download(app(SalesExpenseExport::class), $file_name.'.xlsx');
+    }
 }
+

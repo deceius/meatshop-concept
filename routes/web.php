@@ -1,7 +1,9 @@
 <?php
 
 use App\Mail\DailyReports;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,7 +20,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return redirect('/app/login');
 });
-
 
 /* Auto-generated admin routes */
 Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
@@ -43,6 +44,9 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
         Route::post('/profile',                                     'ProfileController@updateProfile')->name('update-profile');
         Route::get('/password',                                     'ProfileController@editPassword')->name('edit-password');
         Route::post('/password',                                    'ProfileController@updatePassword')->name('update-password');
+        Route::get('/download-report', function (Request $request) {
+            return redirect('app/transaction-details/daily-reports');
+        });
     });
 });
 
@@ -196,6 +200,7 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
             Route::post('/{transactionDetail}',                         'TransactionDetailsController@update')->name('update');
             Route::delete('/{transactionDetail}',                       'TransactionDetailsController@destroy')->name('destroy');
             Route::get('/export',                                       'TransactionDetailsController@export')->name('export');
+            Route::get('/daily-reports',                                'TransactionDetailsController@getDailyReports')->name('daily-reports');
         });
     });
 });
@@ -294,6 +299,7 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
             Route::post('/bulk-destroy',                                'ExpensesController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{expense}',                                   'ExpensesController@update')->name('update');
             Route::delete('/{expense}',                                 'ExpensesController@destroy')->name('destroy');
+            Route::get('/export',                                       'ExpensesController@export')->name('export');
         });
     });
 });

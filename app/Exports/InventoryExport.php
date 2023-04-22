@@ -9,8 +9,9 @@ use Illuminate\Support\Facades\DB;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadings;
 use Maatwebsite\Excel\Concerns\WithMapping;
+use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
-class InventoryExport implements FromCollection, WithMapping, WithHeadings
+class InventoryExport implements FromCollection, WithMapping, WithHeadings, WithStrictNullComparison
 {
     /**
      * @return Collection
