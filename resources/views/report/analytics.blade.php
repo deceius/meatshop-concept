@@ -4,85 +4,87 @@
 
 @section('body')
 
-    <forecasting-details
-        :data="{{ $data->toJson() }}"
-        :url="'{{ url('app/transaction-details/sales-forecasting') }}'"
-        inline-template>
+    <div class="row">
+        <div class="col">
+            <div class="card">
+                <div class="card-header">
+                    <i class="fa fa-align-justify"></i> Sales & Stock Forecasting Summary
+                    </div>
 
+                <div class="card-body" style="padding:0rem;">
+                    <div class="card-block" style="padding:0rem;">
+                        <table class="table  table-bordered table-hover" style="margin-bottom: 0rem;">
+                            <thead>
+                                <tr>
+                                    <th>&nbsp;</th>
+                                    @foreach ($months as $month)
+                                        <th> {{$month}}</th>
+                                    @endforeach
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th> Sales</th>
+                                    @foreach ($summaryData['sales_data'] as $detail)
+                                        <td> {{ number_format($detail, 2) }}</td>
+                                    @endforeach
+                                </tr>
+                                <tr>
+                                    <th> Qty</th>
+                                    @foreach ($summaryData['qty_data'] as $detail)
+                                        <td> {{ number_format($detail, 2) }}</td>
+                                    @endforeach
+
+                                </tr>
+                            </tbody>
+                        </table>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
         <div class="row">
             <div class="col">
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Sales Forecasting
-                        </div>
-                    <div class="card-body" v-cloak>
-                        <div class="card-block">
-                            <form @submit.prevent="">
-                                <div class="row justify-content-md-between">
+                        <i class="fa fa-align-justify"></i> Item Sales & Stock Forecasting
 
-                                    <div class="col col-lg-4 col-sm-12 row">
-                                        <div class="col-lg-12 form-group">
-                                            <div class="input-group">
-                                                <input class="form-control" placeholder="Filter by brand / item keyword..." v-model="search" @keyup.enter="filter('search', $event.target.value)" />
-                                                <span class="input-group-append">
-                                                    <button type="button" class="btn btn-primary" @click="filter('search', search)"><i class="fa fa-filter"></i>&nbsp; Filter</button>
-                                                </span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
-                            <table class="table table-hover table-listing">
+                        </div>
+                        <div class="card-body" v-cloak>
+                            <input id="search" class="form-control" placeholder="Filter by Item Name..."  onkeyup="myFunction()" />
+
+                        </div>
+                    <div class="card-body" style="padding:0rem;">
+                        <div class="card-block" style="padding:0rem;">
+                            <table id="item-forecasting" class="table  table-bordered table-hover" style="margin-bottom: 0rem;">
                                 <thead>
                                     <tr>
-                                        <th class="bulk-checkbox">
-                                            {{-- <input class="form-check-input" id="enabled" type="checkbox" v-model="isClickedAll" v-validate="''" data-vv-name="enabled"  name="enabled_fake_element" @click="onBulkItemsClickedAllWithPagination()">
-                                            <label class="form-check-label" for="enabled">
-                                                #
-                                            </label> --}}
-                                        </th>
-
-                                        <th is='sortable' :column="'brand_name'">Brand</th>
-                                        <th is='sortable' :column="'item_name'">Item</th>
+                                        <th>Item Name</th>
+                                        <th>&nbsp;</th>
                                         @foreach ($months as $month)
-                                            <th is='sortable' :column="'unit_price'">{{$month}}</th>
+                                            <th> {{$month}}</th>
                                         @endforeach
-
-                                        <th></th>
-                                    </tr>
-                                    <tr v-show="(clickedBulkItemsCount > 0) || isClickedAll">
-                                        <td class="bg-bulk-info d-table-cell text-center" colspan="11">
-                                            <span class="align-middle font-weight-light text-dark">{{ trans('brackets/admin-ui::admin.listing.selected_items') }} @{{ clickedBulkItemsCount }}.  <a href="#" class="text-primary" @click="onBulkItemsClickedAll('app/transaction-details')" v-if="(clickedBulkItemsCount < pagination.state.total)"> <i class="fa" :class="bulkCheckingAllLoader ? 'fa-spinner' : ''"></i> {{ trans('brackets/admin-ui::admin.listing.check_all_items') }} @{{ pagination.state.total }}</a> <span class="text-primary">|</span> <a
-                                                        href="#" class="text-primary" @click="onBulkItemsClickedAllUncheck()">{{ trans('brackets/admin-ui::admin.listing.uncheck_all_items') }}</a>  </span>
-
-                                            <span class="pull-right pr-2">
-                                                <button class="btn btn-sm btn-danger pr-3 pl-3" @click="bulkDelete('app/transaction-details/bulk-destroy')">{{ trans('brackets/admin-ui::admin.btn.delete') }}</button>
-                                            </span>
-
-                                        </td>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    <tr v-for="(item, index) in collection" :key="item.id" :class="bulkItems[item.id] ? 'bg-bulk' : ''">
-                                        <td class="bulk-checkbox">
-                                        </td>
-
-                                        <td>@{{ item.brand }}</td>
-                                        <td>@{{ item.item }}</td>
-                                        @foreach ($month_year as $my)
-                                            <td v-if="'{{$my}}' == item.year">
-                                                @{{ item.avg_sales }}
-                                            </td>
-                                            <td v-else>
-                                                0
-                                            </td>
+                                    @foreach ($data as $item)
+                                    <tr>
+                                        <td rowspan="2"> {{$item['item_name']}}</td>
+                                        <th> Sales</th>
+                                        @foreach ($item['sales_data'] as $detail)
+                                            <td> {{ number_format($detail, 2) }}</td>
+                                        @endforeach
+                                    </tr>
+                                    <tr>
+                                        <td style="display:none;"> {{$item['item_name']}}</td>
+                                        <th> Qty</th>
+                                        @foreach ($item['qty_data'] as $detail)
+                                            <td> {{ number_format($detail, 2) }}</td>
                                         @endforeach
 
-                                        <td>
-                                            <div class="row no-gutters">
-                                            </div>
-                                        </td>
                                     </tr>
+                                    @endforeach
                                 </tbody>
                             </table>
 
@@ -91,6 +93,32 @@
                 </div>
             </div>
         </div>
-    </forecasting-details>
 
+@endsection
+@section('bottom-scripts')
+<script>
+    function myFunction() {
+      // Declare variables
+      var input, filter, table, tr, td, i, txtValue;
+      input = document.getElementById("search");
+      filter = input.value.toUpperCase();
+      table = document.getElementById("item-forecasting");
+      tr = table.getElementsByTagName("tr");
+
+      // Loop through all table rows, and hide those who don't match the search query
+      for (i = 0; i < tr.length; i++) {
+        td = tr[i].getElementsByTagName("td")[0];
+        if (td) {
+          txtValue = td.textContent || td.innerText;
+          if (txtValue.toUpperCase().indexOf(filter) > -1) {
+            tr[i].style.display = "";
+            tr[i+1].style.display = "";
+          } else {
+            tr[i].style.display = "none";
+            tr[i+1].style.display = "none";
+          }
+        }
+      }
+    }
+    </script>
 @endsection

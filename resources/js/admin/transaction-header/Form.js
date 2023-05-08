@@ -24,7 +24,8 @@ Vue.component('transaction-header-form', {
                 updated_by:  '' ,
                 traders: '',
                 payment_account_name: '',
-                payment_ref_no: ''
+                payment_ref_no: '',
+                is_paid : ''
 
             }
         }
@@ -45,6 +46,34 @@ Vue.component('transaction-header-form', {
                 updateUrl = url + '/initiate-transfer';
             }
             this.showFormValidation(this, updateUrl)
+        },
+        updatePayment(url) {
+            var updateUrl = url + '/update-payment';
+            this.showPaymentValidation(this, updateUrl)
+        },
+        showPaymentValidation(headerUi, updateUrl){
+            this.$modal.show('dialog', {
+                title: 'Warning!',
+                text: 'This will mark this transaction as paid, and will reflect on the sales reports. Are you sure you want to proceed?' ,
+                buttons: [{ title: 'Cancel' }, {
+                    title: '<span class="btn-dialog btn-danger">Mark as Paid<span>',
+                    handler: function handler() {
+                        headerUi.form.is_paid = 1;
+                        headerUi.submiting = true;
+                        headerUi.$modal.hide('dialog');
+                        console.log(updateUrl);
+                        console.log(headerUi.getPostData());
+                        axios.post(updateUrl, headerUi.getPostData()).then(function (response) {
+                            headerUi.submiting = false;
+                            window.location.reload();
+                        }, function (error) {
+                            headerUi.form.status = 0;
+                            headerUi.submiting = false;
+                            headerUi.$notify({ type: 'error', title: 'Error!', text: error.response.data.message ? error.response.data.message : 'An error has occured.' });
+                        });
+                    }
+                }]
+            });
         },
         showFormValidation(headerUi, updateUrl){
             this.$modal.show('dialog', {

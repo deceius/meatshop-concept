@@ -156,28 +156,101 @@ class TransactionDetailsController extends EmployeeController
 
     public function salesForecasting(Request $request)
     {
-        $months = $this->createMonthArray();
-        $data = [];
         $items = Item::from('items as i')
-                ->join('brands as b', 'i.brand_id', '=', 'b.id');
+                ->select(DB::raw('i.id as item_id, CONCAT(b.name, \' - \', i.name) AS item_name'))
+                ->join('brands as b', 'i.brand_id', '=', 'b.id')->orderBy('item_name', 'asc')->get();
+
+        $summaryData = [
+            'sales_data' => [],
+            'qty_data' => []
+        ];
+        $data = [];
+        $forecastData = TransactionHeader::from('transaction_headers as th')
+        ->leftJoin('transaction_details as td', 'th.id', '=', 'td.transaction_header_id')
+        ->select(
+            'td.item_id',
+            DB::raw('CONCAT(b.name, \' - \', i.name) as item_name'),
+            DB::raw('DATE_FORMAT(th.transaction_date, "%m") as month')
+            )
+        ->selectSub(function ($query) {
+            $query->selectRaw('SUM(b.quantity) / COUNT(b.id)')
+                ->from('transaction_headers as a')
+                ->leftJoin('transaction_details as b', 'a.id', '=', 'b.transaction_header_id')
+                ->whereRaw('DATE_FORMAT(a.transaction_date, "%m") = DATE_FORMAT(th.transaction_date, "%m")')
+                ->whereRaw('DATE_FORMAT(a.transaction_date, "%Y") < DATE_FORMAT(CURRENT_DATE(), "%Y")')
+                ->where('a.transaction_type_id', 2)
+                ->where('a.status', 1)
+                ->whereRaw('b.item_id = td.item_id');
+        }, 'prev_avg_qty')
+        ->selectSub(function ($query) {
+            $query->selectRaw('IFNULL(SUM(b.selling_price) / COUNT(b.id), 0)')
+                ->from('transaction_headers as a')
+                ->leftJoin('transaction_details as b', 'a.id', '=', 'b.transaction_header_id')
+                ->whereRaw('DATE_FORMAT(a.transaction_date, "%m") = DATE_FORMAT(th.transaction_date, "%m")')
+                ->whereRaw('DATE_FORMAT(a.transaction_date, "%Y") < DATE_FORMAT(CURRENT_DATE(), "%Y")')
+                ->where('a.transaction_type_id', 2)
+                ->where('a.status', 1)
+                ->whereRaw('b.item_id = td.item_id');
+        }, 'prev_avg_sales')
+        ->where('transaction_type_id', 2)
+        ->join('items as i', 'i.id', '=', 'td.item_id')
+        ->join('brands as b', 'i.brand_id', '=', 'b.id')
+        ->where('status', 1)
+        ->groupBy('td.item_id', DB::raw('DATE_FORMAT(th.transaction_date, "%m")'))
+        ->orderBy('td.item_id', 'asc')
+        ->get();
 
         foreach ($items as $item){
-            $result = [
-                'item_id' => $item->id,
+            $itemData = [
+                'item_id' => $item->item_id,
+                'item_name' => $item->item_name,
+                'qty_data' => [],
+                'sales_data' => []
             ];
-            foreach($months as $m){
+            $monthlySalesData = [];
+            $monthlyQtyData = [];
+            foreach($forecastData as $forecastItem){
+                if ($item->item_id == $forecastItem->item_id){
+                    $monthlySalesData[$this->getMonthText($forecastItem->month)] = $forecastItem->prev_avg_sales;
+                    $monthlyQtyData[$this->getMonthText($forecastItem->month)] = $forecastItem->prev_avg_qty;
+                }
+            }
 
+            foreach ($this->createMonthArray('M') as $m) {
+                $itemData['sales_data'][$m] = array_key_exists($m, $monthlySalesData) ? $monthlySalesData[$m] : 0;
+                $itemData['qty_data'][$m] = array_key_exists($m, $monthlyQtyData) ? $monthlyQtyData[$m] : 0;
+            }
+            array_push($data, $itemData);
+        }
+
+        foreach ($this->createMonthArray('M') as $m) {
+            $summaryData['sales_data'][$m] = 0;
+            $summaryData['qty_data'][$m] = 0;
+        }
+        foreach($data as $data_item){
+            foreach ($this->createMonthArray('M') as $m) {
+                $summaryData['sales_data'][$m] += $data_item['sales_data'][$m];
+                $summaryData['qty_data'][$m] += $data_item['qty_data'][$m];
             }
         }
 
+        return view('report.analytics', [
+            'data' => $data,
+            'summaryData' => $summaryData,
+            'months' => $this->createMonthArray('M')
+        ]);
     }
 
-    public function createMonthArray() {
+    public function createMonthArray($format = 'm') {
         $months = [];
         for ($m=1; $m<=12; $m++) {
-            $month[] = date('m', mktime(0,0,0,$m, 1, date('Y')));
+            $months[] = date($format, mktime(0,0,0,$m, 1, date('Y')));
         }
         return $months;
+    }
+
+    public function getMonthText($m) {
+        return date('M', mktime(0,0,0,$m, 1, date('Y')));
     }
 
     public function headerDetails(HeaderTransactionDetail $request, $transactionHeaderId)
