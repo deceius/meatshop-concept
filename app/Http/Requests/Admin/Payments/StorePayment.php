@@ -15,7 +15,7 @@ class StorePayment extends FormRequest
      */
     public function authorize(): bool
     {
-        return Gate::allows('admin.item.create');
+        return Gate::allows('admin.transaction-header.create');
     }
 
     /**
@@ -30,12 +30,20 @@ class StorePayment extends FormRequest
             'transaction_header_id' => ['required'],
             'payment_date' => ['required'],
             'payment_amount' => ['required'],
-            'account_name' => ['sometimes'],
-            'reference_number' => ['sometimes'],
+            'account_name' => ['required_unless:type,Cash'],
+            'reference_number' => ['required_unless:type,Cash'],
 
         ];
     }
 
+
+    public function messages()
+    {
+        return [
+            'required' => 'The :attribute field is required.',
+            'required_unless' => 'The :attribute field is required.',
+        ];
+    }
     /**
     * Modify input data
     *

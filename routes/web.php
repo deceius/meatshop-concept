@@ -313,8 +313,10 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
 Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
     Route::prefix('app')->namespace('App\Http\Controllers\Admin')->name('app/')->group(static function() {
         Route::prefix('payment')->name('payment/')->group(static function() {
-            Route::get('/get-transaction-data/{transactionHeaderId}',   'PaymentController@getTransactionData')->name('get-transaction-data');
-            Route::post('/validate-payment',                             'PaymentController@validatePayment')->name('validate-payment');
+            Route::get('/get-transaction-data/{transactionHeaderId}',       'PaymentController@getTransactionData')->name('get-transaction-data');
+            Route::get('/update-payment/{transactionHeaderId}',             'PaymentController@updatePayment')->name('update-payment');
+            Route::post('/validate-payment',                                'PaymentController@validatePayment')->name('validate-payment');
+            Route::delete('/{payment}',                                     'PaymentController@destroy')->name('destroy');
         });
     });
 });

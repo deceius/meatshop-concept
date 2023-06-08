@@ -56,8 +56,15 @@ Vue.component('transaction-header-form', {
             this.$modal.show(
                 PaymentComponent,
                 { transactionHeaderId: this.form.id, url: this.url },
-                { height: 'auto', adaptive: 'true', width: '90%' }
+                { height: 'auto', adaptive: true, width: '90%' },
+                {
+                    closed: this.closeModal
+                }
               )
+        },
+        closeModal(){
+            this.$notify({ type: 'info', title: 'Info', text: 'Reloading data...' });
+            location.reload();
         },
         showPaymentValidation(headerUi, updateUrl){
             this.$modal.show('dialog', {

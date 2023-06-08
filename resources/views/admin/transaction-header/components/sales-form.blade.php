@@ -93,8 +93,8 @@
         <div class="input-group">
             <input disabled type="text" v-model="form.total_payments" class="form-control" >
             <div class="input-group-append">
-                <button type="button" class="btn btn-primary btn-block" @click="openPaymentModal()">
-                    <i class="fa" :class="submiting ? 'fa-spinner' : 'fa-money'"></i>
+                <button type="button" class="btn btn-block" :class="form.is_paid == 1 ? 'btn-success' : 'btn-primary'" @click="openPaymentModal()">
+                    <i class="fa" :class="form.is_paid == 1 ? 'fa-check' : 'fa-money'"></i>
                     Payment Details
                 </button>
             </div>

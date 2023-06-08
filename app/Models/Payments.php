@@ -30,7 +30,7 @@ class Payments extends Model
 
     public function getResourceUrlAttribute()
     {
-        return url('/app/payments/'.$this->getKey());
+        return url('/app/payment/'.$this->getKey());
     }
 
     public function getAmountAttribute(){

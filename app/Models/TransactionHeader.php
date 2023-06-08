@@ -33,7 +33,7 @@ class TransactionHeader extends Model
 
     ];
 
-    protected $appends = ['resource_url', 'total_payments', 'balance', 'payment_data'];
+    protected $appends = ['resource_url', 'total_payments', 'balance', 'payment_data', 'balance_raw'];
 
     /* ************************ ACCESSOR ************************* */
 
@@ -63,8 +63,15 @@ class TransactionHeader extends Model
     public function getBalanceAttribute() {
         $amount = TransactionDetail::where('transaction_header_id', $this->getKey())->get();
         $payments = Payments::where('transaction_header_id', $this->getKey())->get();
-        $balance = $amount->sum('selling_price') - $payments->sum('payment_amount');
+        $balance = $amount->sum('selling_price') - ($payments ? $payments->sum('payment_amount') : 0);
         return number_format($balance, 2);
+    }
+
+    public function getBalanceRawAttribute() {
+        $amount = TransactionDetail::where('transaction_header_id', $this->getKey())->get();
+        $payments = Payments::where('transaction_header_id', $this->getKey())->get();
+        $balance = $amount->sum('selling_price') - ($payments ? $payments->sum('payment_amount') : 0);
+        return $balance;
     }
 
     public function getPaymentDataAttribute() {
