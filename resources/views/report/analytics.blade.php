@@ -1,6 +1,6 @@
 @extends('brackets/admin-ui::admin.layout.default')
 
-@section('title', 'Sales Report')
+@section('title', 'Sales & Stock Forecasting')
 
 @section('body')
 

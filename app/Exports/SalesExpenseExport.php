@@ -35,12 +35,13 @@ class SalesExpenseExport implements FromCollection, WithMapping, WithHeadings, W
                                  \'Receiving\' as \'type\',
                                  b.name as branch_name,
                                  th.remarks,
-                                 th.created_at'
+                                 th.updated_at'
                                 ));
 
 
                 $salesQuery = TransactionHeader::from( 'transaction_headers as th')
                                 ->where('th.transaction_type_id', 2)
+                                ->where('th.is_paid', 1)
                                 ->leftJoin('transaction_details as td', 'th.id', '=', 'td.transaction_header_id')
                                 ->join('branches as b', 'b.id', '=', 'th.branch_id')
                                 ->where('th.branch_id', app('user_branch_id'))
@@ -53,12 +54,12 @@ class SalesExpenseExport implements FromCollection, WithMapping, WithHeadings, W
                                      \'Sales\' as \'type\',
                                      b.name as branch_name,
                                      th.remarks,
-                                     th.created_at'
+                                     th.updated_at'
                                     ));
 
                 $query->union($receivingQueries);
                 $query->union($salesQuery);
-                $query->select(DB::raw('e.id, CONCAT(expense_name) as expense_name, cost, 0 as sales, type, b.name as branch_name, remarks, e.created_at'));
+                $query->select(DB::raw('e.id, CONCAT(expense_name) as expense_name, cost, 0 as sales, type, b.name as branch_name, remarks, e.updated_at'));
 
                 $query->where('e.branch_id', app('user_branch_id'));
                 $query->join('branches as b', 'b.id', '=', 'e.branch_id');

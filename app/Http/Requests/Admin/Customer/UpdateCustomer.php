@@ -28,6 +28,8 @@ class UpdateCustomer extends FormRequest
         return [
             'name' => ['sometimes', 'string'],
             'traders' => ['sometimes', 'array'],
+            'address' => ['sometimes', 'string'],
+            'tin' => ['sometimes', 'string'],
 
         ];
     }

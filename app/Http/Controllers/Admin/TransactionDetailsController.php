@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\DailySalesReportExport;
 use App\Exports\InventoryExport;
 use App\Exports\PricesExport;
+use App\Exports\DailySalesReportExport;
 use App\Exports\SalesReportExport;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\EmployeeController;
@@ -15,14 +15,12 @@ use App\Http\Requests\Admin\TransactionDetail\IndexInventorySalesDetail;
 use App\Http\Requests\Admin\TransactionDetail\IndexTransactionDetail;
 use App\Http\Requests\Admin\TransactionDetail\StoreTransactionDetail;
 use App\Http\Requests\Admin\TransactionDetail\UpdateTransactionDetail;
-use App\Models\Branch;
 use App\Models\TransactionDetail;
 use App\Models\Item;
 use App\Models\Price;
 use App\Models\TransactionHeader;
 use App\Models\Transfer;
 use Brackets\AdminListing\Facades\AdminListing;
-use Carbon\Carbon;
 use Exception;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Contracts\Routing\ResponseFactory;
@@ -39,6 +37,8 @@ use Illuminate\Support\Facades\Request;
 use Illuminate\View\View;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
+use Carbon\Carbon;
+use App\Models\Branch;
 
 class TransactionDetailsController extends EmployeeController
 {
@@ -68,7 +68,11 @@ class TransactionDetailsController extends EmployeeController
 
 
             function ($query) use ($request) {
-                $query->select(DB::raw('td.item_id as id, td.qr_code as qr_code, i.name as item_name, b.name as brand_name, sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) as incoming, sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end) as outgoing, sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end) as current_inventory, min(th.updated_at) as date_received, max(th.updated_at) as last_update'));
+                $query->select(DB::raw('td.item_id as id, td.qr_code as qr_code, i.name as item_name, b.name as brand_name,
+                ROUND(sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end), 2) as incoming,
+                ROUND(sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end), 2) as outgoing,
+                ROUND(sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end), 2) as current_inventory,
+                min(th.transaction_date) as date_received, max(th.transaction_date) as last_update'));
                 $query->from( 'transaction_details as td');
                 $query->where('th.branch_id', app('user_branch_id'));
                 $query->where('th.status', 1);
@@ -77,7 +81,7 @@ class TransactionDetailsController extends EmployeeController
                 $query->join('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id');
                 $query->join('items as i', 'i.id', '=', 'td.item_id');
                 $query->join('brands as b', 'i.brand_id', '=', 'b.id');
-                $query->groupBy('td.qr_code');
+                $query->groupBy('td.qr_code', 'id');
             }
         );
 
@@ -97,12 +101,12 @@ class TransactionDetailsController extends EmployeeController
     {
         $filterDate = $request->input('filterDate');
         // create and AdminListing instance for a specific model and
-        $data = AdminListing::create(TransactionDetail::class)->processRequestAndGet(
+        $data = AdminListing::create(TransactionHeader::class)->processRequestAndGet(
             // pass the request with params
             $request,
 
             // set columns to query
-            ['brand_name', 'item_name', 'id'],
+            ['brand_name', 'item_name', 'id', 'last_update'],
 
             // set columns to searchIn
             ['b.name', 'i.name', 'th.ref_no'],
@@ -115,19 +119,22 @@ class TransactionDetailsController extends EmployeeController
                     th.ref_no as transaction_ref_no,
                     i.name as item_name,
                     b.name as brand_name,
+                    c.name as customer_name,
+                    (SELECT GROUP_CONCAT(trader_name) FROM traders WHERE id IN (trim(trailing \']\' from trim(leading \'[\' from c.agent_ids)))) as trader_name,
                     td.amount as unit_price,
-                    sum(td.quantity) as quantity_sold,
-                    sum(td.selling_price) as price_sold,
-                    th.updated_at as last_update'));
+                    round(sum(td.quantity), 2) as quantity_sold,
+                    round(sum(td.selling_price), 2) as price_sold,
+                    th.updated_at'));
                 $query->from( 'transaction_details as td');
                 $query->where('th.branch_id', app('user_branch_id'));
                 $query->where('th.status', 1);
+                $query->where('th.is_paid', 1);
                 $query->where('th.transaction_type_id', 2);
-                $query->with(['item']);
-                $query->with(['item.brand']);
+                $query->with(['customer']);
                 $query->join('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id');
                 $query->join('items as i', 'i.id', '=', 'td.item_id');
                 $query->join('brands as b', 'i.brand_id', '=', 'b.id');
+                $query->leftJoin('customers as c', 'th.customer_id', '=', 'c.id');
 
                 if ($filterDate) {
                     $query->where(DB::raw('datediff(th.updated_at, CAST(\''. $filterDate .'\' as date))'), 0);
@@ -241,18 +248,6 @@ class TransactionDetailsController extends EmployeeController
         ]);
     }
 
-    public function createMonthArray($format = 'm') {
-        $months = [];
-        for ($m=1; $m<=12; $m++) {
-            $months[] = date($format, mktime(0,0,0,$m, 1, date('Y')));
-        }
-        return $months;
-    }
-
-    public function getMonthText($m) {
-        return date('M', mktime(0,0,0,$m, 1, date('Y')));
-    }
-
     public function headerDetails(HeaderTransactionDetail $request, $transactionHeaderId)
     {
 
@@ -269,7 +264,7 @@ class TransactionDetailsController extends EmployeeController
 
             function ($query) use ($request, $transactionHeaderId) {
                 $query->where('transaction_details.transaction_header_id', $transactionHeaderId);
-                $query->where('transaction_headers.branch_id', app('user_branch_id'));
+                // $query->where('transaction_headers.branch_id', app('user_branch_id'));
                 $query->with(['item']);
                 $query->with(['item.brand']);
 
@@ -339,12 +334,13 @@ class TransactionDetailsController extends EmployeeController
      */
     public function store(StoreTransactionDetail $request)
     {
+
+        $transactionHeader = TransactionHeader::where('id', $request->getTransactionHeaderId())->first();
         // Sanitize input
         $sanitized = $request->getSanitized();
         $sanitized['item_id'] = $request->getItemId();
         $sanitized['created_by'] = Auth::user()->email;
 
-        $transactionHeader = TransactionHeader::where('id', $request->getTransactionHeaderId())->first();
 
         if ($transactionHeader->transaction_type_id == 2){
             $sanitized['selling_price'] =$request->computePrice();
@@ -426,6 +422,7 @@ class TransactionDetailsController extends EmployeeController
     public function update(UpdateTransactionDetail $request, TransactionDetail $transactionDetail)
     {
         // Sanitize input
+
         $sanitized = $request->getSanitized();
 
         // Update changed values TransactionDetail
@@ -433,7 +430,7 @@ class TransactionDetailsController extends EmployeeController
 
         if ($request->ajax()) {
             return [
-                'redirect' => url('app/transaction-headers/'.$transactionDetail->transaction_header_id.'/edit').'?type=4',
+                'redirect' => url('app/transaction-details/'.$transactionDetail->id.'/edit').'?type=4',
                 'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
             ];
         }
@@ -523,7 +520,8 @@ class TransactionDetailsController extends EmployeeController
 
     public function getInventoryComputation($qrCode, $itemId = null){
         $result = TransactionDetail::from( 'transaction_details as td' )
-                        ->select(DB::raw('td.item_id, sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end) as current_inventory'))
+                        ->select(DB::raw('td.item_id,
+                        round(sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end), 2) as current_inventory'))
                         ->leftJoin('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id')
                         // ->where('th.status', '=', 1)
                         ->where('td.qr_code', $qrCode)
@@ -558,9 +556,23 @@ class TransactionDetailsController extends EmployeeController
         return Excel::download(app(SalesReportExport::class), $file_name.'.xlsx');
     }
 
-    public function getDailyReports(Request $request){
-        $ddate = Carbon::now()->format("ym-dHis");
-        $file_name = 'SalesReport_' . $ddate . '_all';
-        return Excel::download(app(DailySalesReportExport::class), $file_name.'.xlsx');
+    public function getDailyReports(HttpRequest $request){
+        $date = $request->input('date');
+        $ddate = Carbon::now()->format("dHis");
+        $file_name = 'SalesReport_'.$date.'_'. $ddate . '_all';
+        return Excel::download(new DailySalesReportExport($date), $file_name.'.xlsx');
     }
+
+        public function createMonthArray($format = 'm') {
+        $months = [];
+        for ($m=1; $m<=12; $m++) {
+            $months[] = date($format, mktime(0,0,0,$m, 1, date('Y')));
+        }
+        return $months;
+    }
+
+    public function getMonthText($m) {
+        return date('M', mktime(0,0,0,$m, 1, date('Y')));
+    }
+
 }

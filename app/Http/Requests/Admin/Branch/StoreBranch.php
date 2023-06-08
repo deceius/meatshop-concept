@@ -27,6 +27,8 @@ class StoreBranch extends FormRequest
     {
         return [
             'name' => ['required', 'string'],
+            'address' => ['required', 'string'],
+            'tin' => ['required', 'string'],
 
         ];
     }

@@ -46,16 +46,20 @@ class TransactionHeadersController extends EmployeeController
     {
 
         $transactionType = $type;
+        $paidFilter = -1;
+        if ($request->input('isPaid') !== null){
+            $paidFilter = $request->input('isPaid') >= 0 ? $request->input('isPaid') : -1;
+        }
         // create and AdminListing instance for a specific model and
         $data = AdminListing::create(TransactionHeader::class)->processRequestAndGet(
             // pass the request with params
             $request,
             // set columns to query
-            ['id', 'ref_no','transaction_date', 'received_by', 'remarks', 'created_by', 'customer_category', 'status', 'transaction_type_id'],
+            ['id', 'ref_no','transaction_date', 'received_by', 'remarks', 'created_by', 'customer_category', 'status', 'transaction_type_id', 'is_paid', 'transaction_date', 'customer_id'],
             // set columns to searchIn
             ['id','ref_no','transaction_date'],
 
-            $this->getQueryCallable($transactionType)
+            $this->getQueryCallable($request, $transactionType, $paidFilter)
 
         );
 
@@ -67,25 +71,25 @@ class TransactionHeadersController extends EmployeeController
             }
 
             foreach ($data->items() as $item){
-                $item->selling_price = $item->transaction_details->sum('selling_price');
+                $item->selling_price = round($item->transaction_details->sum('selling_price'), 2);
                 $item->amount = $item->transaction_details->sum('amount');
-                $item->total_weight = $item->transaction_details->sum('quantity');
+                $item->total_weight = round($item->transaction_details->sum('quantity'), 2);
             }
 
             return ['data' => $data];
         }
 
         foreach ($data->items() as $item){
-            $item->selling_price = $item->transaction_details->sum('selling_price');
+            $item->selling_price = round($item->transaction_details->sum('selling_price'), 2);
             $item->amount = $item->transaction_details->sum('amount');
-            $item->total_weight = $item->transaction_details->sum('quantity');
+            $item->total_weight = round($item->transaction_details->sum('quantity'), 2);
         }
 
         $transactionTypeString = $this->getTransactionType($transactionType);
         return view('admin.transaction-header.index', ['data' => $data, 'type' => $transactionType, 'transactionType' => $transactionTypeString]);
     }
 
-    function getQueryCallable($type){
+    function getQueryCallable($request, $type, $paidFilter){
         switch ($type) {
             case 1:
                 return function ($query) {
@@ -98,12 +102,26 @@ class TransactionHeadersController extends EmployeeController
                     );
                 };
             case 2:
-                return function ($query) {
+                return function ($query) use ($request, $paidFilter) {
+
+                    $query->with(['customer']);
+                    $query->leftJoin('customers', 'customers.id', '=', 'transaction_headers.customer_id');
+                    if($request->has('customers')){
+                        $query->whereIn('customer_id', $request->get('customer'));
+                    }
                     $query->with('transaction_details');
                     $query->leftJoin('transaction_details', 'transaction_headers.id', '=', 'transaction_details.transaction_header_id');
                     $query->where('branch_id', app('user_branch_id'));
                     $query->where('transaction_type_id', 2);
+
+                    if ($paidFilter >= 0) {
+                        $query->where('is_paid', (int)$paidFilter);
+                    }
                     $query->groupBy('transaction_headers.id');
+
+
+
+
                 };
 
             default:
@@ -151,6 +169,78 @@ class TransactionHeadersController extends EmployeeController
                 return '';
         }
     }
+
+    public function invoice(TransactionHeader $transactionHeader, IndexTransactionDetail $request)
+    {
+        $this->authorize('admin.transaction-header.edit', $transactionHeader);
+
+        $transactionHeader->load('branch');
+        $transactionHeader->load('customer');
+        if ($transactionHeader->customer){
+            $traderIds = json_decode($transactionHeader->customer->agent_ids);
+            $traders = Trader::whereIn('id', $traderIds)->get();
+            $transactionHeader->traders = collect($traders)->pluck('trader_name')->toArray();
+        }
+
+        $deliveryBranch = new Branch();
+        if ($transactionHeader->transaction_type_id == 3){
+            $transfer = Transfer::where('pullout_transaction_id', $transactionHeader->id)->first();
+            $deliveryBranch = Branch::where('id', $transfer->delivery_branch_id)->first();
+        }
+        $customers = [];
+        if ($transactionHeader->transaction_type_id == 2){
+            $customers = Customer::all();
+        }
+
+
+        $data = AdminListing::create(TransactionDetail::class)->processRequestAndGet(
+            // pass the request with params
+            $request,
+
+            // set columns to query
+            ['id', 'ref_no', 'transaction_header_id', 'item_id', 'qr_code', 'quantity', 'amount', 'created_by', 'updated_by', 'selling_price'],
+            // set columns to searchIn
+            ['ref_no', 'qr_code', 'created_by', 'updated_by'],
+            function ($query) use ($request, $transactionHeader) {
+                $query->where('transaction_details.transaction_header_id', $transactionHeader->id);
+                $query->with(['item']);
+                $query->with(['item.brand']);
+                $query->join('items', 'items.id', '=', 'transaction_details.item_id');
+                $query->join('brands', 'items.brand_id', '=', 'brands.id');
+
+                if($transactionHeader->transaction_type_id == 4){
+                    $query->select('transaction_details.*');
+                    $query->addSelect('pullout_transaction.quantity as actual_quantity');
+                    $query->join('transfers', 'transaction_details.transaction_header_id', '=', 'transfers.delivery_transaction_id');
+                    $query->join('transaction_details as pullout_transaction', 'transfers.pullout_transaction_id', '=', 'pullout_transaction.transaction_header_id');
+                }
+
+                if($request->has('items')){
+                    $query->whereIn('item_id', $request->get('item'));
+                }
+            }
+        );
+
+        $sum = 0;
+        foreach ($data->items() as $detail) {
+            $sum += $detail->selling_price;
+        }
+
+        $isNotSameBranch = $transactionHeader->branch_id != app('user_branch_id');
+        $transactionType = $transactionHeader->transaction_type_id;
+        $transactionTypeString = $this->getTransactionType($transactionType);
+        return view( $transactionType == 2 ? 'admin.transaction-header.invoice' : 'admin.transaction-header.dr', [
+            'transactionHeader' => $transactionHeader,
+            'data' => $data,
+            'deliveryBranch' => ($deliveryBranch) ? $deliveryBranch : null,
+            'type' => $transactionType,
+            'transactionType' => $transactionTypeString,
+            'sum' => $sum,
+            'branch_id' => $transactionHeader->branch_id,
+            'traders' => Trader::all()
+        ]);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -257,6 +347,12 @@ class TransactionHeadersController extends EmployeeController
                     $query->addSelect('pullout_transaction.quantity as actual_quantity');
                     $query->join('transfers', 'transaction_details.transaction_header_id', '=', 'transfers.delivery_transaction_id');
                     $query->join('transaction_details as pullout_transaction', 'transfers.pullout_transaction_id', '=', 'pullout_transaction.transaction_header_id');
+                    $query->groupBy('transaction_details.id');
+                }
+
+                if($transactionHeader->transaction_type_id == 2) {
+                    $query->select('transaction_details.*');
+                    $query->addSelect(DB::raw('round(transaction_details.quantity * transaction_details.amount, 2) as total_cost'));
                 }
 
                 if($request->has('items')){
@@ -269,6 +365,7 @@ class TransactionHeadersController extends EmployeeController
         $transactionType = $transactionHeader->transaction_type_id;
         $transactionTypeString = $this->getTransactionType($transactionType);
 
+        // dd($transactionHeader->toJson());
         return view('admin.transaction-header.edit', [
             'transactionHeader' => $transactionHeader,
             'data' => $data,
@@ -279,7 +376,8 @@ class TransactionHeadersController extends EmployeeController
             'customers' => $customers,
             'isReadOnly' => $isNotSameBranch ? '1' : '0',
             'branch_id' => $transactionHeader->branch_id,
-            'traders' => Trader::all()
+            'traders' => Trader::all(),
+            'url' => url('/')
         ]);
     }
 
@@ -382,6 +480,34 @@ class TransactionHeadersController extends EmployeeController
             }
             else {
                 abort(400, "Status update not allowed. Please add transaction details first.");
+                return redirect()->back();
+            }
+
+        }
+    }
+
+    public function updatePayment(UpdateTransactionHeader $request, TransactionHeader $transactionHeader) {
+
+        if ($transactionHeader->transaction_type_id != 2) {
+            abort(400, "This is only applicable to Sales Transactions.");
+            return redirect()->back();
+        }
+        $result = false;
+        $sanitized = $request->getSanitized();
+        if ($transactionHeader->status == 1){
+            $transactionHeader->update($sanitized);
+            $result = true;
+        }
+
+        if ($request->ajax()) {
+            if ($result){
+                return [
+                    'redirect' =>url('app/transaction-headers/'.$transactionHeader->id.'/edit').'?type='.$transactionHeader->transaction_type_id,
+                    'message' => trans('brackets/admin-ui::admin.operation.succeeded'),
+                ];
+            }
+            else {
+                abort(400, "Unable to set as transaction as paid. Please make sure that the transaction has been finalized.");
                 return redirect()->back();
             }
 

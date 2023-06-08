@@ -29,7 +29,7 @@
             <td>@{{ item.remarks }}</td>
 
             <td>
-                <div v-show="item.status == 0" class="row no-gutters">
+                <div v-show="item.status == 0 && item.transaction_type != 4" class="row no-gutters">
                     <form class="col" @submit.prevent="deleteItem(item.resource_url)">
                         <button type="submit" class="btn btn-sm btn-danger" title="{{ trans('brackets/admin-ui::admin.btn.delete') }}"><i class="fa fa-trash-o"></i></button>
                     </form>

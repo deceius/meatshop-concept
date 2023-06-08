@@ -28,10 +28,8 @@ class UpdateExpense extends FormRequest
         return [
             'expense_name' => ['sometimes', 'string'],
             'cost' => ['sometimes', 'numeric'],
-            'branch_id' => ['sometimes', 'string'],
-            'remarks' => ['sometimes', 'string'],
-            'created_by' => ['sometimes', 'string'],
-            'updated_by' => ['nullable', 'string'],
+            'remarks' => ['sometimes'],
+            'type' => ['sometimes', 'string']
             
         ];
     }

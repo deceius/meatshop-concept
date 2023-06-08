@@ -27,6 +27,8 @@ class UpdateBranch extends FormRequest
     {
         return [
             'name' => ['sometimes', 'string'],
+            'address' => ['sometimes', 'string'],
+            'tin' => ['sometimes', 'string'],
 
         ];
     }

@@ -43,6 +43,13 @@
         <div v-if="errors.has('quantity')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('quantity') }}</div>
     </div>
 </div>
+<div class="form-group row align-items-center" :class="{'has-danger': errors.has('total_amt'), 'has-success': fields.total_amt && fields.total_amt.valid }">
+    <label for="total_amt" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">Total Amount</label>
+        <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
+        <input disabled type="text" v-model="form.total_amt" v-validate="'required'" @input="validate($event)" class="form-control" :class="{'form-control-danger': errors.has('total_amt'), 'form-control-success': fields.total_amt && fields.total_amt.valid}" id="total_amt" name="total_amt" placeholder="Total Amount">
+        <div v-if="errors.has('total_amt')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('total_amt') }}</div>
+    </div>
+</div>
 
 
 <div class="form-group row align-items-center" :class="{'has-danger': errors.has('sale_type'), 'has-success': fields.sale_type && fields.sale_type.valid }">

@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin\TransactionDetail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use App\Models\TransactionHeader;
 
 class UpdateTransactionDetail extends FormRequest
 {
@@ -25,6 +26,15 @@ class UpdateTransactionDetail extends FormRequest
      */
     public function rules(): array
     {
+        $th = TransactionHeader::where('id', '=', $this->transactionDetail->transaction_header_id)->first();
+        if ($th->transaction_type_id == 1) {
+            return [
+                'quantity' => ['sometimes'],
+                'qr_code' => ['sometimes', 'unique:transaction_details,qr_code,'.$this->get('qr_code')],
+                'amount' => ['sometimes'],
+            ];
+        }
+
         return [
             'quantity' => ['sometimes'],
             'amount' => ['sometimes'],
@@ -52,4 +62,13 @@ class UpdateTransactionDetail extends FormRequest
         }
         return null;
     }
+
+    public function computePrice(){
+        return $this->get('amount') * $this->get('quantity');
+    }
+
+    public function getTransactionHeaderId(){
+        return $this->get('transaction_header_id');
+    }
+
 }

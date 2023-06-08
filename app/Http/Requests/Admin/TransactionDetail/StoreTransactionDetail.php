@@ -5,6 +5,7 @@ namespace App\Http\Requests\Admin\TransactionDetail;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
+use App\Models\TransactionHeader;
 
 class StoreTransactionDetail extends FormRequest
 {
@@ -26,15 +27,24 @@ class StoreTransactionDetail extends FormRequest
     public function rules(): array
     {
 
-
+        $th = TransactionHeader::where('id', '=', $this->getTransactionHeaderId())->first();
+        if ($th->transaction_type_id == 1) {
+            return [
+                'transaction_header_id' => ['required'],
+                'item' => ['required'],
+                'qr_code' => ['required', 'unique:transaction_details,qr_code'],
+                'amount' => ['required'],
+                'quantity' => ['required', 'lte:current_weight'],
+                'sale_type' => ['sometimes'],
+            ];
+        }
         return [
             'transaction_header_id' => ['required'],
             'item' => ['required'],
             'qr_code' => ['required'],
             'amount' => ['required'],
             'quantity' => ['required', 'lte:current_weight'],
-            'sale_type' => ['sometimes']
-
+            'sale_type' => ['sometimes'],
         ];
     }
 
@@ -46,6 +56,7 @@ class StoreTransactionDetail extends FormRequest
     {
         return [
             'quantity.lte' => 'Unable to set quantity. It should not be more than the current stock.',
+            'qr_code.unique' => 'QR Code already exists. Please generate a new QR Code to receive this item.',
         ];
     }
 

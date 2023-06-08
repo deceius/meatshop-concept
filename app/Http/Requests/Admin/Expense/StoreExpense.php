@@ -28,8 +28,9 @@ class StoreExpense extends FormRequest
         return [
             'expense_name' => ['required', 'string'],
             'cost' => ['required', 'numeric'],
-            'remarks' => ['required', 'string'],
-
+            'remarks' => ['sometimes'],
+            'type' => ['required', 'string']
+            
         ];
     }
 

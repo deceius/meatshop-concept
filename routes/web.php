@@ -1,10 +1,9 @@
 <?php
 
 use App\Mail\DailyReports;
-use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Http\Request;
 
 /*
 |--------------------------------------------------------------------------
@@ -19,6 +18,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return redirect('/app/login');
+});
+Route::get('/clear-cache', function() {
+    $exitCode = Artisan::call('cache:clear');
+    // return what you want
 });
 
 /* Auto-generated admin routes */
@@ -45,7 +48,7 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
         Route::get('/password',                                     'ProfileController@editPassword')->name('edit-password');
         Route::post('/password',                                    'ProfileController@updatePassword')->name('update-password');
         Route::get('/download-report', function (Request $request) {
-            return redirect('app/transaction-details/daily-reports');
+            return redirect('app/transaction-details/daily-reports?date='.$request->input('date'));
         });
     });
 });
@@ -214,7 +217,9 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
             Route::get('/get/traders',                                       'TransactionHeadersController@getTraders')->name('get-traders');
             Route::post('/',                                            'TransactionHeadersController@store')->name('store');
             Route::get('/{transactionHeader}/edit',                     'TransactionHeadersController@edit')->name('edit');
+            Route::get('/{transactionHeader}/print',                     'TransactionHeadersController@invoice')->name('invoice');
             Route::post('/{transactionHeader}/update-status',           'TransactionHeadersController@updateStatus')->name('update-status');
+            Route::post('/{transactionHeader}/update-payment',           'TransactionHeadersController@updatePayment')->name('update-payment');
             Route::post('/{transactionHeader}/initiate-transfer',           'TransactionHeadersController@initiateTransfer')->name('initiate-transfer');
             Route::post('/bulk-destroy',                                'TransactionHeadersController@bulkDestroy')->name('bulk-destroy');
             Route::post('/{transactionHeader}',                         'TransactionHeadersController@update')->name('update');
@@ -300,6 +305,16 @@ Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->gro
             Route::post('/{expense}',                                   'ExpensesController@update')->name('update');
             Route::delete('/{expense}',                                 'ExpensesController@destroy')->name('destroy');
             Route::get('/export',                                       'ExpensesController@export')->name('export');
+        });
+    });
+});
+
+/* Auto-generated admin routes */
+Route::middleware(['auth:' . config('admin-auth.defaults.guard'), 'admin'])->group(static function () {
+    Route::prefix('app')->namespace('App\Http\Controllers\Admin')->name('app/')->group(static function() {
+        Route::prefix('payment')->name('payment/')->group(static function() {
+            Route::get('/get-transaction-data/{transactionHeaderId}',   'PaymentController@getTransactionData')->name('get-transaction-data');
+            Route::post('/validate-payment',                             'PaymentController@validatePayment')->name('validate-payment');
         });
     });
 });

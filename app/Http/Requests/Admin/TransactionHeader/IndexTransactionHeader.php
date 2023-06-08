@@ -26,7 +26,7 @@ class IndexTransactionHeader extends FormRequest
     {
         return [
             'orderBy' => 'in:id,ref_no,transaction_type_id,branch_id,transaction_date,received_by,delivered_by,remarks,customer_id,customer_category,payment_id,created_by,updated_by|nullable',
-            'orderDirection' => 'in:asc,desc|nullable',
+            'orderDirection' => 'in:desc,asc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',
             'per_page' => 'integer|nullable',

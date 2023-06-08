@@ -12,6 +12,7 @@
             :delivery_branch="{{ ($deliveryBranch) ? $deliveryBranch->toJson() : null }}"
             :current-branch = "{{ $transactionHeader->branch->toJson() }}"
             :is-read-only = "{{ $isReadOnly }}"
+            :url= "'{{ $url }}'"
             v-cloak
             inline-template>
 
@@ -36,6 +37,10 @@
                                 <i class="fa" :class="submiting ? 'fa-spinner' : 'fa-edit'"></i>
                                 Finalize
                         </button>
+                        {{-- <button v-show="({{ $transactionHeader->is_paid }} != 1&&{{ $transactionHeader->status }} == 1 && {{ $transactionHeader->transaction_type_id }} == 2) && {{ $transactionHeader->branch_id}} == {{ app('user_branch_id') }}" type="button" class="btn btn-success" :disabled="submiting" @click="updatePayment (data.resource_url)">
+                                <i class="fa" :class="submiting ? 'fa-spinner' : 'fa-money'"></i>
+                                Mark as Paid
+                        </button> --}}
 
                     </div>
 

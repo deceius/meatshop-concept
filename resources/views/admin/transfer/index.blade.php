@@ -66,17 +66,18 @@
                                     <tr v-for="(item, index) in collection" :key="item.id" :class="bulkItems[item.id] ? 'bg-bulk' : ''">
 
                                         <td><a :href="item.pullout_transaction.resource_url + '/edit' + '?type=3'">@{{ item.pullout_transaction.ref_no }}</a></td>
-                                        <td><a v-if="item.delivery_transaction_id > 0" :href="item.delivery_transaction.resource_url + '/edit' + '?type=1'">@{{ item.delivery_transaction.ref_no }}</a></td>
+                                        <td>
+                                            <a v-if="item.delivery_transaction != null" :href="item.delivery_transaction.resource_url + '/edit' + '?type=1'">@{{ item.delivery_transaction.ref_no }}</a></td>
                                         <td>@{{ item.delivery_branch.name }}</td>
                                         <td>@{{ item.created_by }}</td>
 
                                         <td>
-                                            <div v-show="item.pullout_transaction.status == 0" class="row no-gutters">
-                                                {{-- <div class="col-auto">
-                                                    <a class="btn btn-sm btn-spinner btn-info" :href="item.resource_url + '/edit'" title="{{ trans('brackets/admin-ui::admin.btn.edit') }}" role="button"><i class="fa fa-edit"></i></a>
-                                                </div> --}}
+                                            <div  class="row no-gutters">
+                                                <div class="col-auto">
+                                                    <a class="btn btn-sm btn-success" v-show="item.pullout_transaction.status == 1" :href="item.pullout_transaction.resource_url + '/print'" target="_blank" title="Print DR" role="button"><i class="fa fa-print"></i></a>
+                                                </div>
                                                 <form class="col" @submit.prevent="deleteItem(item.resource_url)">
-                                                    <button type="submit" class="btn btn-sm btn-danger" title="{{ trans('brackets/admin-ui::admin.btn.delete') }}"><i class="fa fa-trash-o"></i></button>
+                                                    <button v-show="item.delivery_transaction?.status == 0 || item.delivery_transaction == null" type="submit" class="btn btn-sm btn-danger" title="{{ trans('brackets/admin-ui::admin.btn.delete') }}"><i class="fa fa-trash-o"></i></button>
                                                 </form>
                                             </div>
                                         </td>

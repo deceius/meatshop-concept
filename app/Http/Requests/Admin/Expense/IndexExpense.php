@@ -25,7 +25,7 @@ class IndexExpense extends FormRequest
     public function rules(): array
     {
         return [
-            'orderBy' => 'in:id,expense_name,cost,branch_name,sales,remarks,created_by,updated_by|nullable',
+            'orderBy' => 'in:id,expense_name,cost,type,sales,branch_id,remarks,created_by,updated_by|nullable',
             'orderDirection' => 'in:asc,desc|nullable',
             'search' => 'string|nullable',
             'page' => 'integer|nullable',

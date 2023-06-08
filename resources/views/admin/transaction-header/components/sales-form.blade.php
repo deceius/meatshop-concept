@@ -6,6 +6,14 @@
     </div>
 </div>
 
+<div class="form-group row align-items-center" :class="{'has-danger': errors.has('invoice_no'), 'has-success': fields.invoice_no && fields.invoice_no.valid }">
+    <label for="invoice_no" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">Sales Invoice No.</label>
+        <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
+        <input :disabled="form.status >= 1 || {{ $branch_id }} != {{ app('user_branch_id') }}" type="text" v-model="form.invoice_no" v-validate="'required' " @input="validate($event)" class="form-control" :class="{'form-control-danger': errors.has('invoice_no'), 'form-control-success': fields.invoice_no && fields.invoice_no.valid}" id="invoice_no" name="invoice_no" placeholder="Sales Invoice Number">
+        <div v-if="errors.has('invoice_no')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('invoice_no') }}</div>
+    </div>
+</div>
+
 <div class="form-group row align-items-center" :class="{'has-danger': errors.has('branch'), 'has-success': fields.branch && fields.branch.valid }">
     <label for="item" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ trans('admin.'.$transactionType.'.columns.branch_id') }}</label>
     <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
@@ -78,3 +86,18 @@
     </div>
 </div>
 
+
+<div class="form-group row align-items-center" v-if="form.status == 1">
+    <label for="payment_total" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ __("Total Payments") }}</label>
+    <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
+        <div class="input-group">
+            <input disabled type="text" v-model="form.total_payments" class="form-control" >
+            <div class="input-group-append">
+                <button type="button" class="btn btn-primary btn-block" @click="openPaymentModal()">
+                    <i class="fa" :class="submiting ? 'fa-spinner' : 'fa-money'"></i>
+                    Payment Details
+                </button>
+            </div>
+          </div>
+    </div>
+</div>

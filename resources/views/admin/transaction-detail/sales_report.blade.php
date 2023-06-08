@@ -1,6 +1,6 @@
 @extends('brackets/admin-ui::admin.layout.default')
 
-@section('title', 'Item Sales Report')
+@section('title', 'Sales Report')
 
 @section('body')
 
@@ -13,7 +13,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Item Sales Report
+                        <i class="fa fa-align-justify"></i> Sales Report
                         <a class="btn btn-success btn-sm pull-right m-b-0 ml-2" href="{{ url('app/transaction-details/sales-report/export') }}" role="button"><i class="fa fa-file-excel-o"></i>&nbsp; Export</a>
                         </div>
                     <div class="card-body" v-cloak>
@@ -50,7 +50,7 @@
                                 </div>
                             </form>
 
-                            <table class="table table-hover table-listing">
+                            <table class="table table-hover table-listing item-sales-detail">
                                 <thead>
                                     <tr>
                                         <th class="bulk-checkbox">
@@ -61,12 +61,14 @@
                                         </th>
 
                                         <th is='sortable' :column="'transaction_ref_no'">Reference Number</th>
+                                        <th is='sortable' :column="'brand_name'">Customer</th>
+                                        <th is='sortable' :column="'trader_name'">Trader(s)</th>
                                         <th is='sortable' :column="'brand_name'">Brand</th>
                                         <th is='sortable' :column="'item_name'">Item</th>
                                         <th is='sortable' :column="'unit_price'">Unit Price</th>
                                         <th is='sortable' :column="'quantity_sold'">Quantity</th>
                                         <th is='sortable' :column="'price_sold'">Amount</th>
-                                        <th is='sortable' :column="'transaction_date'">Posted Date</th>
+                                        <th is='sortable' :column="'transaction_date'">Payment Date</th>
 
                                         <th></th>
                                     </tr>
@@ -91,12 +93,14 @@
                                         </td>
 
                                         <td>@{{ item.transaction_ref_no }}</td>
+                                        <td>@{{ item.customer_name }}</td>
+                                        <td>@{{ item.trader_name }}</td>
                                         <td>@{{ item.brand_name }}</td>
                                         <td>@{{ item.item_name }}</td>
                                         <td>@{{ item.unit_price }}</td>
                                         <td>@{{ item.quantity_sold }}</td>
                                         <td>@{{ item.price_sold }}</td>
-                                        <td>@{{ item.last_update }}</td>
+                                        <td>@{{ item.updated_at  | datetime  }}</td>
 
                                         <td>
                                             <div class="row no-gutters">

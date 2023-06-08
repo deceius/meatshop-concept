@@ -18,10 +18,13 @@ inline-template>
                         <thead>
                             <tr>
 
+                                <th is='sortable' :column="'item_id'">{{ trans('admin.transaction-detail.columns.qr_code') }}</th>
                                 <th is='sortable' :column="'item_id'">{{ trans('admin.transaction-detail.columns.item_id') }}</th>
                                 <th is='sortable' :column="'quantity'">{{ trans('admin.transaction-detail.columns.quantity') }}</th>
                                 <th is='sortable' :column="'amount'">{{ trans('admin.transaction-detail.columns.amount') }}</th>
-
+                                @if($transactionHeader->transaction_type_id == 2)
+                                <th is='sortable' :column="'amount'">Total Cost</th>
+                                @endif
                                 <th></th>
                             </tr>
 
@@ -30,9 +33,13 @@ inline-template>
                             <tr v-for="(item, index) in collection" :key="item.id" :class="bulkItems[item.id] ? 'bg-bulk' : ''">
 
 
+                                <td>@{{ item.qr_code }}</td>
                                 <td>@{{ item.item.brand.name +  " - " + item.item.name }}</td>
                                 <td>@{{ item.quantity }}</td>
                                 <td>@{{ item.amount }}</td>
+                                @if($transactionHeader->transaction_type_id == 2)
+                                <td>@{{ item.total_cost }}</td>
+                                @endif
                                 <td>
                                     <div class="row no-gutters">
                                         <form class="col" @submit.prevent="deleteItem(item.resource_url)">

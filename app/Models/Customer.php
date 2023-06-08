@@ -8,6 +8,8 @@ class Customer extends Model
 {
     protected $fillable = [
         'name',
+        'address',
+        'tin',
         'agent_ids',
         'created_by',
         'updated_by',
@@ -30,11 +32,14 @@ class Customer extends Model
         return url('app/customers/'.$this->getKey());
     }
 
-
+    public function transaction_headers() {
+        return $this->hasMany(TransactionHeader::class);
+    }
     public function getTraderNamesAttribute(){
         $traderIds = explode(',', str_replace(array('[',']'),'',$this->agent_ids));
         $traders = Trader::whereIn('id', $traderIds)->get();
-        return collect($traders)->pluck('trader_name')->toArray();
+        return implode (", ", collect($traders)->pluck('trader_name')->toArray());
+        
     }
 
 }

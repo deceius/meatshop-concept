@@ -14,18 +14,21 @@
     </div>
 </div>
 
-<div class="form-group row align-items-center" :class="{'has-danger': errors.has('branch_id'), 'has-success': fields.branch_id && fields.branch_id.valid }">
-    <label for="branch_id" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ trans('admin.expense.columns.branch_id') }}</label>
-        <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
-        <input type="text" v-model="form.branch_id" v-validate="'required'" @input="validate($event)" class="form-control" :class="{'form-control-danger': errors.has('branch_id'), 'form-control-success': fields.branch_id && fields.branch_id.valid}" id="branch_id" name="branch_id" placeholder="{{ trans('admin.expense.columns.branch_id') }}">
-        <div v-if="errors.has('branch_id')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('branch_id') }}</div>
+
+<div class="form-group row align-items-center" :class="{'has-danger': errors.has('type'), 'has-success': fields.type && fields.type.valid }">
+    <label for="type" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">Expense Type</label>
+    <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
+        <div class="input-group ">
+            <multiselect v-model="form.type" :preselect-first="true" placeholder="{{ trans('brackets/admin-ui::admin.forms.select_options') }}"  :options="['Direct', 'Indirect']" :multiple="false" :preselect-first="true" open-direction="bottom"></multiselect>
+        </div>
+        <div v-if="errors.has('type')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('type') }}</div>
     </div>
 </div>
 
 <div class="form-group row align-items-center" :class="{'has-danger': errors.has('remarks'), 'has-success': fields.remarks && fields.remarks.valid }">
     <label for="remarks" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ trans('admin.expense.columns.remarks') }}</label>
         <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
-        <input type="text" v-model="form.remarks" v-validate="'required'" @input="validate($event)" class="form-control" :class="{'form-control-danger': errors.has('remarks'), 'form-control-success': fields.remarks && fields.remarks.valid}" id="remarks" name="remarks" placeholder="{{ trans('admin.expense.columns.remarks') }}">
+        <input type="text" v-model="form.remarks"  @input="validate($event)" class="form-control" :class="{'form-control-danger': errors.has('remarks'), 'form-control-success': fields.remarks && fields.remarks.valid}" id="remarks" name="remarks" placeholder="{{ trans('admin.expense.columns.remarks') }}">
         <div v-if="errors.has('remarks')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('remarks') }}</div>
     </div>
 </div>

@@ -64,7 +64,6 @@
                                                         href="#" class="text-primary" @click="onBulkItemsClickedAllUncheck()">{{ trans('brackets/admin-ui::admin.listing.uncheck_all_items') }}</a>  </span>
 
                                             <span class="pull-right pr-2">
-
                                                 <button class="btn btn-sm btn-danger pr-3 pl-3" @click="bulkDelete('prices/bulk-destroy')">{{ trans('brackets/admin-ui::admin.btn.delete') }}</button>
                                             </span>
 

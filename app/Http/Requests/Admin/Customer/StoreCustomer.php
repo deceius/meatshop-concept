@@ -28,6 +28,8 @@ class StoreCustomer extends FormRequest
         return [
             'name' => ['required', 'string'],
             'traders' => ['sometimes', 'array'],
+            'address' => ['sometimes', 'string'],
+            'tin' => ['sometimes', 'string'],
 
         ];
     }

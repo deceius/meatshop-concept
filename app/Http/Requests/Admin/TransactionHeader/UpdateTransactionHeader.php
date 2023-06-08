@@ -41,10 +41,12 @@ class UpdateTransactionHeader extends FormRequest
             case 2:
                     $rules = [
                         'ref_no' => ['required', 'string'],
+                        'invoice_no' => ['required', 'string'],
                         'transaction_date' => ['required', 'date'],
                         'remarks' => ['sometimes'],
                         'branch' => ['required'],
                         'status' => ['sometimes'],
+                        'is_paid' => ['sometimes'],
                         'customer' => ['sometimes'],
                         'transaction_type_id' => ['required'],
                         'customer_category' => ['required'],

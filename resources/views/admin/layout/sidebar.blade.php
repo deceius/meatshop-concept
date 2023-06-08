@@ -17,8 +17,8 @@
                 Transactions
                 </a>
                 <ul class="nav-dropdown-items">
-                    <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-headers').'/1' }}"><i class="nav-icon icon-note"></i> {{ trans('admin.receiving.title') }}</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-headers').'/2' }}"><i class="nav-icon icon-basket"></i> {{ trans('admin.sales.title') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-headers').'/1?orderBy=id&orderDirection=desc' }}"><i class="nav-icon icon-note"></i> {{ trans('admin.receiving.title') }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-headers').'/2?orderBy=id&orderDirection=desc' }}"><i class="nav-icon icon-basket"></i> {{ trans('admin.sales.title') }}</a></li>
                 </ul>
             </li>
             @endif
@@ -48,11 +48,11 @@
                 Sales
                 </a>
                 <ul class="nav-dropdown-items">
-                       <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/sales-report') }}"><i class="nav-icon icon-chart"></i>Item Sales</a></li>
-                       <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/sales-forecasting') }}"><i class="nav-icon icon-chart"></i>Forecasting</a></li>
+                       <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/sales-report') }}"><i class="nav-icon icon-chart"></i> Item Sales</a></li>
+                       <li class="nav-item"><a class="nav-link" href="{{ url('app/transaction-details/sales-forecasting') }}"><i class="nav-icon icon-chart"></i> Forecasting</a></li>
                 </ul>
             </li>
-           <li class="nav-item"><a class="nav-link" href="{{ url('app/expenses/expense-report') }}"><i class="nav-icon icon-chart"></i>Sales & Expenses</a></li>
+           <li class="nav-item"><a class="nav-link" href="{{ url('app/expenses/expense-report') }}"><i class="nav-icon icon-chart"></i> Sales & Expenses</a></li>
             @endif
             @if (in_array(app('user_tier_id'), app('admin_access')))
             <li class="nav-title">{{ trans('admin.terms.item_master_data') }}</li>

@@ -14,18 +14,12 @@ use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
 class DailySalesReportExport implements FromCollection, WithMapping, WithHeadings, WithStrictNullComparison
 {
-
-    protected $reportDate;
-
-    function __construct($reportDate) {
-            $this->reportDate = $reportDate;
-    }
     /**
      * @return Collection
      */
     public function collection()
     {
-        $date = $this->reportDate;
+        $date = Carbon::now();
         $query = TransactionDetail::from( 'transaction_details as td');
         $query->select(DB::raw('
                     td.id as id,
@@ -34,9 +28,12 @@ class DailySalesReportExport implements FromCollection, WithMapping, WithHeading
                     i.name as item_name,
                     b.name as brand_name,
                     td.amount as unit_price,
+                    th.payment_id,
+                    th.payment_account_name,
+                    th.payment_ref_no,
                     sum(td.quantity) as quantity_sold,
                     sum(td.selling_price) as price_sold,
-                    th.updated_at as posted_date'));
+                    case when th.is_paid = 1 then th.updated_at else \'--\' end  as payment_date'));
         // $query->where('th.branch_id', app('user_branch_id'));
         $query->where('th.status', 1);
         $query->where('th.transaction_type_id', 2);
@@ -67,7 +64,10 @@ class DailySalesReportExport implements FromCollection, WithMapping, WithHeading
             'Unit Price',
             'Quantity',
             'Amount',
-            'Posted Date'
+            'Payment',
+            'Account Name',
+            'Account Number',
+            'Payment Date'
         ];
     }
 
@@ -80,12 +80,16 @@ class DailySalesReportExport implements FromCollection, WithMapping, WithHeading
     {
         return [
             $result->transaction_ref_no,
+            $result->branch_name,
             $result->brand_name,
             $result->item_name,
             $result->unit_price,
             $result->quantity_sold,
             $result->price_sold,
-            $result->posted_date,
+            $result->payment_id,
+            $result->payment_account_name,
+            $result->payment_ref_no,
+            $result->payment_date,
         ];
     }
 }

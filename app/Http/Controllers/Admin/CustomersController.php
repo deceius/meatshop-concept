@@ -123,6 +123,7 @@ class CustomersController extends ManagerController
 
         $traderIds =  json_decode($customer->agent_ids);
         $customer->traders = Trader::whereIn('id', $traderIds)->get();
+       
         // dd($customer->traders->toJson());
 
 

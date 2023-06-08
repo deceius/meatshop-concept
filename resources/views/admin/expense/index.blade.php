@@ -49,7 +49,7 @@
                                         <th is='sortable' :column="'id'">{{ trans('admin.expense.columns.id') }}</th>
                                         <th is='sortable' :column="'expense_name'">{{ trans('admin.expense.columns.expense_name') }}</th>
                                         <th is='sortable' :column="'cost'">{{ trans('admin.expense.columns.cost') }}</th>
-                                        <th is='sortable' :column="'branch_id'">{{ trans('admin.expense.columns.branch_id') }}</th>
+                                        <th is='sortable' :column="'cost'">Expense Type</th>
                                         <th is='sortable' :column="'remarks'">{{ trans('admin.expense.columns.remarks') }}</th>
                                         <th is='sortable' :column="'created_by'">{{ trans('admin.expense.columns.created_by') }}</th>
 
@@ -76,7 +76,7 @@
                                     <td>@{{ item.id }}</td>
                                         <td>@{{ item.expense_name }}</td>
                                         <td>@{{ item.cost }}</td>
-                                        <td>@{{ item.branch_id }}</td>
+                                        <td>@{{ item.type }}</td>
                                         <td>@{{ item.remarks }}</td>
                                         <td>@{{ item.created_by }}</td>
 

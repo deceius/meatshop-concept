@@ -1,6 +1,6 @@
 @extends('brackets/admin-ui::admin.layout.default')
 
-@section('title', 'Sales and Expense Report')
+@section('title', 'Sales & Expenses Report')
 
 @section('body')
 
@@ -13,7 +13,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Sales and Expense Report
+                        <i class="fa fa-align-justify"></i> Sales & Expenses Report
                         <a class="btn btn-success btn-sm pull-right m-b-0 ml-2" href="{{ url('app/expenses/export') }}" role="button"><i class="fa fa-file-excel-o"></i>&nbsp; Export</a>
 
                         </div>
@@ -69,7 +69,7 @@
                                         <td>@{{ item.sales }}</td>
                                         <td>@{{ item.branch_name }}</td>
                                         <td>@{{ item.remarks }}</td>
-                                        <td>@{{ item.created_at }}</td>
+                                        <td>@{{ item.updated_at | datetime }}</td>
                                         <td></td>
                                     </tr>
                                 </tbody>

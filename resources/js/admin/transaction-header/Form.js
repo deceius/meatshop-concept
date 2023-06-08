@@ -1,11 +1,12 @@
 import AppForm from '../app-components/Form/AppForm';
-
+import PaymentComponent from './PaymentComponent.vue'
 Vue.component('transaction-header-form', {
     mixins: [AppForm],
     props: {'type': Number,
             'currentBranch' : Object,
             'isReadOnly': Number,
-            'delivery_branch': [Object, null]},
+            'delivery_branch': [Object, null],
+            'url': String},
     data: function() {
         return {
             form: {
@@ -50,6 +51,13 @@ Vue.component('transaction-header-form', {
         updatePayment(url) {
             var updateUrl = url + '/update-payment';
             this.showPaymentValidation(this, updateUrl)
+        },
+        openPaymentModal() {
+            this.$modal.show(
+                PaymentComponent,
+                { transactionHeaderId: this.form.id, url: this.url },
+                { height: 'auto', adaptive: 'true', width: '90%' }
+              )
         },
         showPaymentValidation(headerUi, updateUrl){
             this.$modal.show('dialog', {

@@ -88,6 +88,7 @@
                                         <td>@{{ item.outgoing }}</td>
                                         <td>@{{ item.current_inventory }}</td>
 
+                                       
                                     </tr>
                                 </tbody>
                             </table>

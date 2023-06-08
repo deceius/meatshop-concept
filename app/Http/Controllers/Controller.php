@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Exports\DailySalesReportExport;
 use App\Models\AccessTier;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -11,10 +10,6 @@ use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Storage;
-use Maatwebsite\Excel\Excel as ExcelExcel;
-use Maatwebsite\Excel\Facades\Excel;
 
 use function PHPUnit\Framework\isEmpty;
 
@@ -48,7 +43,5 @@ class Controller extends BaseController
     public function validateEmployeeAccess(){
         $this->validateAccessTier(app('employee_access'));
     }
-
-
 
 }
