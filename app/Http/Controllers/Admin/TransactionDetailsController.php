@@ -559,9 +559,9 @@ class TransactionDetailsController extends EmployeeController
 
     public function getDailyReports(HttpRequest $request){
         $date = $request->input('date');
-        $ddate = Carbon::now()->format("dHis");
+        $ddate = Carbon::now()->format("His");
         $file_name = 'IncomeStatement_'.$date.'_'. $ddate . '_all';
-        return Excel::download(new IncomeStatementExport($date), $file_name.'.xlsx');
+        return Excel::download(new DailySalesReportExport($date), $file_name.'.xlsx');
     }
 
         public function createMonthArray($format = 'm') {

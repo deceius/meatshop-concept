@@ -1,4 +1,36 @@
 @inject('carbon', 'Carbon\Carbon')
+
+<table>
+    <thead>
+        <tr>
+            <th colspan="3">Summary</th>
+        </tr>
+        <tr>
+            <th>&nbsp;</th>
+            <th>Summary</th>
+            <th>Amount</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>&nbsp;</td>
+            <td>GROSS</td>
+            <td>{{ $payments->sum('amount') }}</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>Expenses</td>
+            <td>{{ $expenses->sum('amount') }}</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>Net Today</td>
+            <td>{{ $payments->sum('amount') - $expenses->sum('amount') }}</td>
+        </tr>
+    </tbody>
+</table>
+
+<br>
 <table>
     <thead>
         <tr>
@@ -20,10 +52,10 @@
             <td>{{ $key + 1}}</td>
             <td>{{ $item->ref_no }}</td>
             <td>{{ $item->amount }}</td>
-            <td>{{ $item->type == 1 ? 'Paid' : 'Accounts Receivable' }}</td>
+            <td>{{ $item->type == 1 ? 'Paid (' . $carbon::parse($item->updated_at)->format('Y-m-d') .')'  : 'Accounts Receivable' }}</td>
             <td>{{ $item->branch_name }}</td>
             <td>{{ $item->remarks }}</td>
-            <td>{{ $carbon::parse($item->updated_at)->format('Y-m-d') }}</td>
+            <td>{{ $carbon::parse($item->transaction_date)->format('Y-m-d') }}</td>
         </tr>
     @endforeach
     </tbody>
@@ -92,7 +124,7 @@
             <td>{{ $item->type }}</td>
             <td>{{ $item->branch_name }}</td>
             <td>{{ $item->remarks }}</td>
-            <td>{{ $carbon::parse($item->updated_at)->format('Y-m-d') }}</td>
+            <td>{{ $carbon::parse($item->date)->format('Y-m-d') }}</td>
         </tr>
     @endforeach
     <tr>
@@ -104,35 +136,5 @@
         <td>&nbsp;</td>
         <td>&nbsp;</td>
     </tr>
-    </tbody>
-</table>
-<br>
-<table>
-    <thead>
-        <tr>
-            <th colspan="3">Summary</th>
-        </tr>
-        <tr>
-            <th>&nbsp;</th>
-            <th>Summary</th>
-            <th>Amount</th>
-        </tr>
-    </thead>
-    <tbody>
-        <tr>
-            <td>&nbsp;</td>
-            <td>GROSS</td>
-            <td>{{ $payments->sum('amount') }}</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td>Expenses</td>
-            <td>{{ $expenses->sum('amount') }}</td>
-        </tr>
-        <tr>
-            <td>&nbsp;</td>
-            <td>Net Today</td>
-            <td>{{ $payments->sum('amount') - $expenses->sum('amount') }}</td>
-        </tr>
     </tbody>
 </table>

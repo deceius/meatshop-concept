@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Exports\IncomeStatementExport;
 use App\Http\Controllers\ManagerController;
 use App\Http\Requests\Admin\Expense\BulkDestroyExpense;
 use App\Http\Requests\Admin\Expense\DestroyExpense;
@@ -20,14 +20,13 @@ use Illuminate\Http\Response;
 use Illuminate\Routing\Redirector;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Models\TransactionHeader;
 use Illuminate\View\View;
 use Carbon\Carbon;
 use App\Models\Branch;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Exports\SalesExpenseExport;
-use App\Models\Payments;
+use Illuminate\Http\Request;
 
 class ExpensesController extends ManagerController
 {
@@ -201,12 +200,21 @@ class ExpensesController extends ManagerController
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
     }
 
-    public function expenseReport(IndexExpense $request)
+    public function expenseReport(Request $request)
     {
 
-        $date = Carbon::now()->format('Y-m-d');
+        $dateFilter = $request->input('date');
+        $monthFilter = $request->input('month');
+        $export = $request->input('export');
+
+        $date = $dateFilter ? $dateFilter : Carbon::now()->format('Y-m-d');
         $profit = $this->paymentQuery($date)->sum('amount') - $this->expenseQuery($date)->sum('amount');
-        return view('admin.expense.report', ['isProfit' => $profit > 0, 'date' => $date, 'payments' => $this->paymentQuery($date), 'sales' => $this->salesQuery($date), 'expenses' => $this->expenseQuery($date)]);
+
+        if ($export) {
+            return $this->export($date, $monthFilter ? true : false);
+        }
+            return view('admin.expense.report', ['isProfit' => $profit > 0, 'date' => $date, 'payments' => $this->paymentQuery($date), 'sales' => $this->salesQuery($date), 'expenses' => $this->expenseQuery($date)]);
+
     }
 
     function expenseQuery($date)
@@ -244,12 +252,14 @@ class ExpensesController extends ManagerController
     function paymentQuery($date) {
         $payments = DB::table('payments as p')
                                 ->leftJoin('transaction_headers as th', 'th.id', 'p.transaction_header_id')
+                                ->join('customers as c', 'c.id', '=', 'th.customer_id')
                                 ->join('branches as b', 'b.id', '=', 'th.branch_id')
                                 ->where(DB::raw('datediff(p.payment_date, CAST(\''. $date .'\' as date))'), 0)
+                                ->where('th.branch_id', app('user_branch_id'))
                                 ->where('th.is_paid', 1)
                                 ->select(DB::raw(
                                     'p.id,
-                                    CONCAT(th.ref_no) as ref_no,
+                                    CONCAT(c.name, \' (\', th.ref_no, \')\')  as ref_no,
                                     p.payment_amount as amount,
                                     CONCAT(\'\', p.type, \' Payment\') as \'type\',
                                      b.name as branch_name,
@@ -266,26 +276,30 @@ class ExpensesController extends ManagerController
                                 ->leftJoin('transaction_details as td', 'th.id', '=', 'td.transaction_header_id')
                                 ->where(DB::raw('datediff(th.transaction_date, CAST(\''. $date .'\' as date))'), 0)
                                 ->join('branches as b', 'b.id', '=', 'th.branch_id')
+                                ->join('customers as c', 'c.id', '=', 'th.customer_id')
                                 ->where('th.branch_id', app('user_branch_id'))
                                 ->groupBy('th.id')
                                 ->select(DB::raw(
                                     'th.id,
-                                    th.ref_no as ref_no,
+                                    CONCAT(c.name, \' (\', th.ref_no, \')\')  as ref_no,
                                     IFNULL(sum(td.selling_price), 0) as amount,
                                      th.is_paid as \'type\',
                                      b.name as branch_name,
                                      th.remarks,
-                                     th.updated_at'
+                                     th.updated_at,
+                                     th.transaction_date'
                                     ));
         return $salesQuery->get();
     }
 
-    public function export(): ?BinaryFileResponse
+    public function export($date, $month = false): ?BinaryFileResponse
     {
-        $branch = Branch::where('id', app('user_branch_id'))->first();
-        $ddate = Carbon::now()->format("ym-dHis");
-        $file_name = 'SalesExpensesReport_' . $ddate . '_' . $branch->name;
-        return Excel::download(app(SalesExpenseExport::class), $file_name.'.xlsx');
+        $ddate = Carbon::now()->format("His");
+        $exportDate = $month ? Carbon::parse($date)->format('Y-F') : $date;
+        $file_name = 'IncomeStatement_'. $exportDate .'_'. $ddate;
+        return Excel::download(new IncomeStatementExport($date, $month), $file_name.'.xlsx');
     }
+
+
 
 }
