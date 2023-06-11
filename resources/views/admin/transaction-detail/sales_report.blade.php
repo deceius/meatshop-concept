@@ -1,6 +1,6 @@
 @extends('brackets/admin-ui::admin.layout.default')
 
-@section('title', 'Sales Report')
+@section('title', 'Item Sales Report')
 
 @section('body')
 
@@ -13,7 +13,7 @@
             <div class="col">
                 <div class="card">
                     <div class="card-header">
-                        <i class="fa fa-align-justify"></i> Sales Report
+                        <i class="fa fa-align-justify"></i> Item Sales Report
                         <a class="btn btn-success btn-sm pull-right m-b-0 ml-2" href="{{ url('app/transaction-details/sales-report/export') }}" role="button"><i class="fa fa-file-excel-o"></i>&nbsp; Export</a>
                         </div>
                     <div class="card-body" v-cloak>

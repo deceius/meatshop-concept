@@ -14,12 +14,18 @@ use Maatwebsite\Excel\Concerns\WithStrictNullComparison;
 
 class DailySalesReportExport implements FromCollection, WithMapping, WithHeadings, WithStrictNullComparison
 {
+
+
+    private $date = '';
+    public function __construct(String $date) {
+        $this->date = $date;
+    }
     /**
      * @return Collection
      */
     public function collection()
     {
-        $date = Carbon::now();
+        $date = $this->date;//Carbon::now();
         $query = TransactionDetail::from( 'transaction_details as td');
         $query->select(DB::raw('
                     td.id as id,

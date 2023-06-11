@@ -9,7 +9,7 @@
             <th :column="'total_weight'">Payment Date</th>
             <th :column="'total_weight'">Total Weight (kg)</th>
             {{-- <th :column="'unit_price'">Total Unit Price</th> --}}
-            <th :column="'total_amount'">Total Selling Price</th>
+            <th :column="'total_amount'">Total Price</th>
             <th :column="'unit_price'">Balance</th>
             <th :column="'transaction_date'">{{ trans('admin.'.$transactionType.'.columns.transaction_date') }}</th>
             <!--<th :column="'created_by'">{{ trans('admin.'.$transactionType.'.columns.created_by') }}</th>-->

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Exports\InventoryExport;
 use App\Exports\PricesExport;
 use App\Exports\DailySalesReportExport;
+use App\Exports\IncomeStatementExport;
 use App\Exports\SalesReportExport;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\EmployeeController;
@@ -552,15 +553,15 @@ class TransactionDetailsController extends EmployeeController
     {
         $branch = Branch::where('id', app('user_branch_id'))->first();
         $ddate = Carbon::now()->format("ym-dHis");
-        $file_name = 'SalesReport_' . $ddate . '_' . $branch->name;
+        $file_name = 'ItemSalesReport_' . $ddate . '_' . $branch->name;
         return Excel::download(app(SalesReportExport::class), $file_name.'.xlsx');
     }
 
     public function getDailyReports(HttpRequest $request){
         $date = $request->input('date');
         $ddate = Carbon::now()->format("dHis");
-        $file_name = 'SalesReport_'.$date.'_'. $ddate . '_all';
-        return Excel::download(new DailySalesReportExport($date), $file_name.'.xlsx');
+        $file_name = 'IncomeStatement_'.$date.'_'. $ddate . '_all';
+        return Excel::download(new IncomeStatementExport($date), $file_name.'.xlsx');
     }
 
         public function createMonthArray($format = 'm') {

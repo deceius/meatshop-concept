@@ -86,12 +86,25 @@
     </div>
 </div>
 
+<div class="form-group row align-items-center" v-if="form.status == 1">
+    <label for="payment_total" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ __("Total Amount") }}</label>
+    <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
+        <input disabled type="text" v-model="form.total_cost" class="form-control" >
+    </div>
+</div>
 
 <div class="form-group row align-items-center" v-if="form.status == 1">
-    <label for="payment_total" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ __("Total Payments") }}</label>
+    <label for="payment_total" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ __("Total Amount Paid") }}</label>
+    <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
+        <input disabled type="text" v-model="form.total_payments" class="form-control" >
+    </div>
+</div>
+
+<div class="form-group row align-items-center" v-if="form.status == 1">
+    <label for="payment_total" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ __("Outstanding Balance") }}</label>
     <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
         <div class="input-group">
-            <input disabled type="text" v-model="form.total_payments" class="form-control" >
+            <input disabled type="text" v-model="form.balance" class="form-control" >
             <div class="input-group-append">
                 <button type="button" class="btn btn-block" :class="form.is_paid == 1 ? 'btn-success' : 'btn-primary'" @click="openPaymentModal()">
                     <i class="fa" :class="form.is_paid == 1 ? 'fa-check' : 'fa-money'"></i>
