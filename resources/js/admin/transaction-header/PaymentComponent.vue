@@ -101,7 +101,7 @@ export default {
             promptMessage: '',
             form: {
                type: '',
-               payment_date: new Date(),
+               payment_date: '',
                reference_number: '',
                account_name: '',
                payment_amount: ''
@@ -171,7 +171,7 @@ export default {
             this.showPrompt('');
             this.form = {
                type: '',
-               payment_date: new Date(),
+               payment_date: '',
                reference_number: '',
                account_name: '',
                payment_amount: '',

@@ -45,12 +45,12 @@
                                     <tr>
 
                                         <th is='sortable' :column="'type'"></th>
-                                        <th is='sortable' :column="'expense_name'">Particulars / Ref No.</th>
+                                        <th is='sortable' :column="'expense_name'">Particulars / Transaction Ref No.</th>
                                         <th is='sortable' :column="'cost'">{{ trans('admin.expense.columns.cost') }}</th>
-                                        <th is='sortable' :column="'sales'">Sales</th>
+                                        <th is='sortable' :column="'sales'">Income</th>
                                         <th is='sortable' :column="'branch_id'">{{ trans('admin.expense.columns.branch_id') }}</th>
                                         <th is='sortable' :column="'remarks'">{{ trans('admin.expense.columns.remarks') }}</th>
-                                        <th is='sortable' :column="'updated_at'">Last Update</th>
+                                        <th is='sortable' :column="'updated_at'">Date</th>
                                         <th></th>
                                     </tr>
 
@@ -60,7 +60,7 @@
                                         <td>
                                             <div>
                                                 <span v-if="item.type == 'Receiving'" class="badge badge-info text-white">Receiving</span>
-                                                <span v-else-if="item.type == 'Sales'" class="badge badge-success text-white">Sales</span>
+                                                <span v-else-if="item.type.includes('Payment')" class="badge badge-success text-white">@{{ 'Sales | ' + item.type }}</span>
                                                 <span v-else class="badge badge-danger text-white">@{{ item.type }}</span>
                                             </div>
                                         </td>
@@ -69,7 +69,7 @@
                                         <td>@{{ item.sales }}</td>
                                         <td>@{{ item.branch_name }}</td>
                                         <td>@{{ item.remarks }}</td>
-                                        <td>@{{ item.updated_at | datetime }}</td>
+                                        <td>@{{ item.updated_at | date }}</td>
                                         <td></td>
                                     </tr>
                                 </tbody>

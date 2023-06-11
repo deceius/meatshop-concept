@@ -7,9 +7,10 @@
             <th :column="'customer'">Customer</th>
             <th :column="'customer'">Traders</th>
             <th :column="'total_weight'">Payment Date</th>
-            <th :column="'total_weight'">Weight (kg)</th>
-            <th :column="'unit_price'">Total Unit Price</th>
+            <th :column="'total_weight'">Total Weight (kg)</th>
+            {{-- <th :column="'unit_price'">Total Unit Price</th> --}}
             <th :column="'total_amount'">Total Selling Price</th>
+            <th :column="'unit_price'">Balance</th>
             <th :column="'transaction_date'">{{ trans('admin.'.$transactionType.'.columns.transaction_date') }}</th>
             <!--<th :column="'created_by'">{{ trans('admin.'.$transactionType.'.columns.created_by') }}</th>-->
 
@@ -33,11 +34,12 @@
             <td>@{{ item.customer == null ? '--' : item.customer.trader_names }}</td>
             <td>@{{ (item.is_paid == 1 ? item.updated_at : '--')  | datetime }}</td>
             <td>@{{ item.total_weight }}</td>
-            <td>@{{ item.amount }}</td>
+            {{-- <td>@{{ item.amount }}</td> --}}
             <td>@{{ item.selling_price }}</td>
+            <td>@{{ item.status == 1 ? item.balance_raw : '--' }}</td>
             <td>@{{ item.transaction_date | datetime }}</td>
             <!--<td>@{{ item.created_by }}</td>-->
-            
+
 
             <td></td>
             <td>

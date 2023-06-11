@@ -56,7 +56,7 @@
                                         <th is='sortable' :column="'last_update'">Last Update</th>
                                         <th is='sortable' :column="'incoming'">In</th>
                                         <th is='sortable' :column="'outgoing'">Out</th>
-                                        <th is='sortable' :column="'current_inventory'">Current</th>
+                                        <th is='sortable' class="text-right" :column="'current_inventory'">Current</th>
 
                                     </tr>
                                     <tr v-show="(clickedBulkItemsCount > 0) || isClickedAll">
@@ -88,7 +88,7 @@
                                         <td>@{{ item.outgoing }}</td>
                                         <td>@{{ item.current_inventory }}</td>
 
-                                       
+
                                     </tr>
                                 </tbody>
                             </table>

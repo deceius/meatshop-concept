@@ -27,6 +27,7 @@ use App\Models\Branch;
 use Maatwebsite\Excel\Facades\Excel;
 use Symfony\Component\HttpFoundation\BinaryFileResponse;
 use App\Exports\SalesExpenseExport;
+use App\Models\Payments;
 
 class ExpensesController extends ManagerController
 {
@@ -199,7 +200,7 @@ class ExpensesController extends ManagerController
 
         return response(['message' => trans('brackets/admin-ui::admin.operation.succeeded')]);
     }
-    
+
     public function expenseReport(IndexExpense $request)
     {
         $filterDate = $request->input('filterDate');
@@ -233,29 +234,44 @@ class ExpensesController extends ManagerController
                                 ));
 
 
-                $salesQuery = TransactionHeader::from( 'transaction_headers as th')
-                                ->where('th.transaction_type_id', 2)
-                                ->where('th.is_paid', 1)
-                                ->where('th.status', 1)
-                                ->leftJoin('transaction_details as td', 'th.id', '=', 'td.transaction_header_id')
+                // $salesQuery = TransactionHeader::from( 'transaction_headers as th')
+                //                 ->where('th.transaction_type_id', 2)
+                //                 ->where('th.is_paid', 1)
+                //                 ->where('th.status', 1)
+                //                 ->leftJoin('payments as p', 'th.id', '=', 'p.transaction_header_id')
+                //                 ->join('branches as b', 'b.id', '=', 'th.branch_id')
+                //                 ->leftJoin('transaction_details as td', 'th.id', '=', 'td.transaction_header_id')
+                //                 ->where('th.branch_id', app('user_branch_id'))
+                //                 ->groupBy('th.id')
+                //                 ->select(DB::raw(
+                //                     'th.id,
+                //                     th.ref_no as expense_name,
+                //                     0 as cost,
+                //                     IFNULL(sum(td.selling_price), 0) as sales,
+                //                      \'Payment\' as \'type\',
+                //                      b.name as branch_name,
+                //                      th.remarks,
+                //                      th.updated_at'
+                //                     ));
+                $salesQuery = Payments::from('payments as p')
+                                ->leftJoin('transaction_headers as th', 'th.id', 'p.transaction_header_id')
                                 ->join('branches as b', 'b.id', '=', 'th.branch_id')
-                                ->where('th.branch_id', app('user_branch_id'))
-                                ->groupBy('th.id')
+                                ->where('th.is_paid', 1)
                                 ->select(DB::raw(
-                                    'th.id,
-                                    th.ref_no as expense_name,
+                                    'p.id,
+                                    CONCAT(th.ref_no) as expense_name,
                                     0 as cost,
-                                    IFNULL(sum(td.selling_price), 0) as sales,
-                                     \'Sales\' as \'type\',
+                                    p.payment_amount as sales,
+                                    CONCAT(\'\', p.type, \' Payment\') as \'type\',
                                      b.name as branch_name,
                                      th.remarks,
-                                     th.updated_at'
+                                     p.payment_date as updated_at'
                                     ));
 
                 if ($filterDate) {
                     $query->where(DB::raw('datediff(e.created_at, CAST(\''. $filterDate .'\' as date))'), 0);
                     $receivingQueries->where(DB::raw('datediff(th.created_at, CAST(\''. $filterDate .'\' as date))'), 0);
-                    $salesQuery->where(DB::raw('datediff(th.created_at, CAST(\''. $filterDate .'\' as date))'), 0);
+                    $salesQuery->where(DB::raw('datediff(p.payment_date, CAST(\''. $filterDate .'\' as date))'), 0);
                 }
                 $query->union($receivingQueries);
                 $query->union($salesQuery);
@@ -277,7 +293,7 @@ class ExpensesController extends ManagerController
 
         return view('admin.expense.report', ['data' => $data]);
     }
-    
+
         public function export(): ?BinaryFileResponse
     {
         $branch = Branch::where('id', app('user_branch_id'))->first();
@@ -285,5 +301,5 @@ class ExpensesController extends ManagerController
         $file_name = 'SalesExpensesReport_' . $ddate . '_' . $branch->name;
         return Excel::download(app(SalesExpenseExport::class), $file_name.'.xlsx');
     }
-    
+
 }

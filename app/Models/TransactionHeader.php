@@ -71,7 +71,7 @@ class TransactionHeader extends Model
         $amount = TransactionDetail::where('transaction_header_id', $this->getKey())->get();
         $payments = Payments::where('transaction_header_id', $this->getKey())->get();
         $balance = $amount->sum('selling_price') - ($payments ? $payments->sum('payment_amount') : 0);
-        return $balance;
+        return round($balance, 2);
     }
 
     public function getPaymentDataAttribute() {
