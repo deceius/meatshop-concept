@@ -137,7 +137,7 @@ export default {
         },
         addPayment() {
             this.showPrompt('');
-            axios.post(this.url + '/app/payment/validate-payment/', this.form).then(
+            axios.post(this.url + '/app/payment/validate-payment', this.form).then(
                 response => {
                     this.enableForm = false;
                     this.initForm();
