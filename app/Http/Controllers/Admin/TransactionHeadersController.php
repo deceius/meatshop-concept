@@ -73,7 +73,7 @@ class TransactionHeadersController extends EmployeeController
             foreach ($data->items() as $item){
                 $item->selling_price = round($item->transaction_details->sum('selling_price'), 2);
                 $item->amount = round($item->transaction_details->sum('amount'), 2);
-                $item->total_weight = round($item->transaction_details->sum('quantity'), 2);
+                $item->total_weight = round($item->transaction_details->sum('quantity'), 3);
             }
 
             return ['data' => $data];
@@ -82,7 +82,7 @@ class TransactionHeadersController extends EmployeeController
         foreach ($data->items() as $item){
             $item->selling_price = round($item->transaction_details->sum('selling_price'), 2);
             $item->amount = round($item->transaction_details->sum('amount'), 2);
-            $item->total_weight = round($item->transaction_details->sum('quantity'), 2);
+            $item->total_weight = round($item->transaction_details->sum('quantity'), 3);
         }
 
         $transactionTypeString = $this->getTransactionType($transactionType);

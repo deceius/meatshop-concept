@@ -32,7 +32,7 @@
                                 <tr>
                                     <th> Qty</th>
                                     @foreach ($summaryData['qty_data'] as $detail)
-                                        <td> {{ number_format($detail, 2) }}</td>
+                                        <td> {{ number_format($detail, 3) }}</td>
                                     @endforeach
 
                                 </tr>
@@ -80,7 +80,7 @@
                                         <td style="display:none;"> {{$item['item_name']}}</td>
                                         <th> Qty</th>
                                         @foreach ($item['qty_data'] as $detail)
-                                            <td> {{ number_format($detail, 2) }}</td>
+                                            <td> {{ number_format($detail, 3) }}</td>
                                         @endforeach
 
                                     </tr>

@@ -70,9 +70,9 @@ class TransactionDetailsController extends EmployeeController
 
             function ($query) use ($request) {
                 $query->select(DB::raw('td.item_id as id, td.qr_code as qr_code, i.name as item_name, b.name as brand_name,
-                ROUND(sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end), 2) as incoming,
-                ROUND(sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end), 2) as outgoing,
-                ROUND(sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end), 2) as current_inventory,
+                ROUND(sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end), 3) as incoming,
+                ROUND(sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end), 3) as outgoing,
+                ROUND(sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end), 3) as current_inventory,
                 min(th.transaction_date) as date_received, max(th.transaction_date) as last_update'));
                 $query->from( 'transaction_details as td');
                 $query->where('th.branch_id', app('user_branch_id'));
@@ -123,7 +123,7 @@ class TransactionDetailsController extends EmployeeController
                     c.name as customer_name,
                     (SELECT GROUP_CONCAT(trader_name) FROM traders WHERE id IN (trim(trailing \']\' from trim(leading \'[\' from c.agent_ids)))) as trader_name,
                     td.amount as unit_price,
-                    round(sum(td.quantity), 2) as quantity_sold,
+                    round(sum(td.quantity), 3) as quantity_sold,
                     round(sum(td.selling_price), 2) as price_sold,
                     th.updated_at'));
                 $query->from( 'transaction_details as td');
@@ -522,7 +522,7 @@ class TransactionDetailsController extends EmployeeController
     public function getInventoryComputation($qrCode, $itemId = null){
         $result = TransactionDetail::from( 'transaction_details as td' )
                         ->select(DB::raw('td.item_id,
-                        round(sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end), 2) as current_inventory'))
+                        round(sum(case when (th.transaction_type_id = 1 or th.transaction_type_id = 4) then td.quantity else 0 end) - sum(case when (th.transaction_type_id = 2 or th.transaction_type_id = 3) then td.quantity else 0 end), 3) as current_inventory'))
                         ->leftJoin('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id')
                         // ->where('th.status', '=', 1)
                         ->where('td.qr_code', $qrCode)
