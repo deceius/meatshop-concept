@@ -49,6 +49,9 @@ Vue.component('transaction-detail-form', {
                         this.form.item = response.data.item;
                         this.form.amount = response.data.price;
                         this.form.current_weight = response.data.current_weight;
+                        if (this.transactionType == 3) {
+                            this.form.quantity = response.data.current_weight;
+                        }
                         this.updateTotalAmount(response.data.price, this.form.quantity);
                         this.$notify({ type: 'success', title: 'Success!', text: 'Item details has been loaded!'})
                     }
