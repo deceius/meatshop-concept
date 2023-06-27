@@ -85,6 +85,15 @@
         <input disabled type="text" v-model="form.customer.trader_names" class="form-control" >
     </div>
 </div>
+<div class="form-group row align-items-center" :class="{'has-danger': errors.has('sale_type'), 'has-success': fields.sale_type && fields.sale_type.valid }" >
+    <label for="sale_type" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ trans('admin.transaction-detail.columns.sale_type') }}</label>
+    <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
+        <div class="input-group">
+            <multiselect :disabled="form.status >= 1 || {{ $branch_id }} != {{ app('user_branch_id') }}" v-model="form.sale_type" placeholder="{{ trans('brackets/admin-ui::admin.forms.select_options') }}" :options="['Retail', 'Wholesale']" :multiple="false" :preselect-first="true" open-direction="bottom"></multiselect>
+        </div>
+        <div v-if="errors.has('sale_type')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('sale_type') }}</div>
+    </div>
+</div>
 
 <div class="form-group row align-items-center" v-if="form.status == 1">
     <label for="payment_total" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ __("Total Amount") }}</label>

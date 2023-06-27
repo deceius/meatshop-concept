@@ -52,7 +52,8 @@ class UpdateTransactionHeader extends FormRequest
                         'customer_category' => ['required'],
                         'payment_id' => ['sometimes'],
                         'payment_account_name' => ['sometimes', 'nullable'],
-                        'payment_ref_no' => ['sometimes', 'nullable']
+                        'payment_ref_no' => ['sometimes', 'nullable'],
+                        'sale_type' => ['sometimes']
 
                     ];
                     break;

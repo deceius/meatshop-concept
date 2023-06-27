@@ -23,7 +23,8 @@ class TransactionHeader extends Model
         'is_paid',
         // 'payment_account_name',
         // 'payment_ref_no',
-        'invoice_no'
+        'invoice_no',
+        'sale_type'
     ];
 
     protected $dates = [

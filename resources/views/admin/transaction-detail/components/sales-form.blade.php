@@ -56,7 +56,7 @@
     <label for="sale_type" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ trans('admin.transaction-detail.columns.sale_type') }}</label>
     <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
         <div class="input-group ">
-            <multiselect v-model="form.sale_type" @input="changeSaleType" placeholder="{{ trans('brackets/admin-ui::admin.forms.select_options') }}" :options="['Wholesale', 'Retail']" :multiple="false" :preselect-first="true" open-direction="bottom"></multiselect>
+            <multiselect v-model="form.sale_type" @input="changeSaleType" placeholder="{{ trans('brackets/admin-ui::admin.forms.select_options') }}" :options="['Box', 'Cutting']" :multiple="false" :preselect-first="true" open-direction="bottom"></multiselect>
         </div>
         <div v-if="errors.has('sale_type')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('sale_type') }}</div>
     </div>

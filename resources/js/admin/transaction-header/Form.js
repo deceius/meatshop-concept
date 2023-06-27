@@ -26,7 +26,8 @@ Vue.component('transaction-header-form', {
                 traders: '',
                 payment_account_name: '',
                 payment_ref_no: '',
-                is_paid : ''
+                is_paid : '',
+                sale_type: ''
 
             }
         }
