@@ -7,6 +7,7 @@
         <style>
             .articles table, .articles th, .articles td {
                 border: 1px solid black;
+                padding: 5px;
             }
         </style>
     </head>
@@ -25,40 +26,53 @@
                 </tr>
                 <tr>
                     <td class="align-text-top">Delivered To Branch: {{ $deliveryBranch->name }}</td>
-                    <td class="align-text-top">Transaction Date: {{ $transactionHeader->transaction_date }}</td>
+                    <td class="align-text-top">Transfer Date: {{ $transactionHeader->transaction_date }}</td>
                 </tr>
-                 <tr>
-                    
+                <tr>
                     <td class="align-text-top">Source Branch: {{ $transactionHeader->branch->name }}</td>
                     <td class="align-text-top">Created By: {{ $transactionHeader->created_by }}</td>
-                </tr> 
+                </tr>
+                @if($deliveryTransaction?->status == 1)
+                <tr>
+                    <td class="align-text-top">Delivered By: {{ $deliveryTransaction->delivered_by ? $deliveryTransaction->delivered_by : '--' }}</td>
+                    <td class="align-text-top">Received By: {{ $deliveryTransaction->received_by }}</td>
+                </tr>
+                @endif
             </table>
         </div>
         <div class="px-3 mt-5">
             <table width=100%  class="articles text-center">
                 <thead >
-                    <th width=15%>Qty.</th>
-                    <th width=50%>Articles</th>
-                    <th width=15%>U. Price</th>
+                    <th width=15%>QR Code</th>
+                    <th width=25%>Particulars</th>
+                    <th width=15%>Qty. (kg)</th>
                 </thead>
 
                 <tbody>
                     @foreach ($data as $detail)
                     <tr>
-                        <td>{{ number_format($detail->quantity, 2, '.', ',')  . ' kg' }}</td>
-                        <td> {{ $detail->qr_code . ' - ' . $detail->item->brand->name . ' ' . $detail->item->name }}</td>
-                        <td>{{ number_format($detail->amount, 2, '.', ',') }}</td>
+                        <td class="text-start"> {{ $detail->qr_code }}</td>
+                        <td class="text-start"> {{  $detail->item->brand->name . ' ' . $detail->item->name }}</td>
+                        <td class="text-end">{{ number_format($detail->quantity, 2, '.', ',')  . ' kg' }}</td>
                     </tr>
                     @endforeach
+                    <tr>
+                        <th class="text-end" colspan="2"> Total Quantity (kg)</th>
+                        <th class="text-end">{{ number_format($data->sum('quantity'), 2, '.', ',')  . ' kg' }}</th>
+                    </tr>
+                    <tr>
+                        <th class="text-end" colspan="2"> Total Boxes </th>
+                        <th class="text-end">{{ count($data) }}</th>
+                    </tr>
                 </tbody>
-                
-                
+
+
             </table>
         </div>
 
-        <div class="d-flex justify-content-end mt-0 px-3 text-end">
+        {{-- <div class="d-flex justify-content-end mt-0 px-3 text-end">
             <p><br><br>By: ____________________________<br>Authorized Signature &nbsp;&nbsp;&nbsp;</p>
-        </div>
+        </div> --}}
     </body>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>

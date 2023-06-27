@@ -74,7 +74,7 @@ class UpdateTransactionHeader extends FormRequest
                             'ref_no' => ['sometimes', 'string'],
                             'transaction_date' => ['sometimes', 'date'],
                             'received_by' => ['sometimes'],
-                            'delivered_by' => ['sometimes'],
+                            'delivered_by' => ['required'],
                             'branch' => ['sometimes'],
                             'status' => ['sometimes'],
                             'remarks' => ['sometimes'],

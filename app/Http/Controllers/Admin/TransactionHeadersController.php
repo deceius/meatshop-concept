@@ -185,6 +185,7 @@ class TransactionHeadersController extends EmployeeController
         $deliveryBranch = new Branch();
         if ($transactionHeader->transaction_type_id == 3){
             $transfer = Transfer::where('pullout_transaction_id', $transactionHeader->id)->first();
+            $deliveryTransaction = TransactionHeader::where('id', $transfer->delivery_transaction_id)->first();
             $deliveryBranch = Branch::where('id', $transfer->delivery_branch_id)->first();
         }
         $customers = [];
@@ -233,6 +234,7 @@ class TransactionHeadersController extends EmployeeController
             'transactionHeader' => $transactionHeader,
             'data' => $data,
             'deliveryBranch' => ($deliveryBranch) ? $deliveryBranch : null,
+            'deliveryTransaction' => ($deliveryTransaction) ? $deliveryTransaction : null,
             'type' => $transactionType,
             'transactionType' => $transactionTypeString,
             'sum' => $sum,
