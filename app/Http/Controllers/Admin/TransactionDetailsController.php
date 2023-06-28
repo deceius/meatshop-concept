@@ -496,7 +496,7 @@ class TransactionDetailsController extends EmployeeController
                 abort(404, 'Price settings are not set. Contact your administrator to configure the item price.');
             }
 
-            if ($request->input('sale_type') == 'Retail'){
+            if ($request->input('sale_type') == 'Cutting'){
                 $price = $price->cut_amount;
             }
             else {
