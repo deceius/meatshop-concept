@@ -70,14 +70,20 @@ class TransactionHeader extends Model
         $amount = TransactionDetail::where('transaction_header_id', $this->getKey())->get();
         $payments = Payments::where('transaction_header_id', $this->getKey())->get();
         $balance = $amount->sum('selling_price') - ($payments ? $payments->sum('payment_amount') : 0);
-        return number_format($balance, 2);
+        if ($balance >= 0) {
+            return number_format($balance, 2);
+        }
+        else {
+            return number_format(0, 2) . ' ('. number_format($balance, 2) . ')';
+        }
+
     }
 
     public function getBalanceRawAttribute() {
         $amount = TransactionDetail::where('transaction_header_id', $this->getKey())->get();
         $payments = Payments::where('transaction_header_id', $this->getKey())->get();
         $balance = $amount->sum('selling_price') - ($payments ? $payments->sum('payment_amount') : 0);
-        return round($balance, 2);
+        return round($balance > 0 ? $balance : 0, 2);
     }
 
     public function getPaymentDataAttribute() {

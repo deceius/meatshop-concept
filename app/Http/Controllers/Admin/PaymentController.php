@@ -33,8 +33,8 @@ class PaymentController extends EmployeeController
             $sanitized = $request->getSanitized();
             $transactionHeader = TransactionHeader::where('id', $request->get('transaction_header_id'))->first();
             $totalBalance = floatval($transactionHeader->balance_raw) - floatval($sanitized['payment_amount']);
-            if ($totalBalance < 0) {
-                abort(422, "Payment amount exceeds outstanding balance. " . $totalBalance);
+            if (round($totalBalance, 2) <= -1) {
+                abort(422, "Payment amount exceeds outstanding balance. " . round($totalBalance, 2));
             }
             if ($sanitized['payment_amount'] <= 0) {
                 abort(422, "Payment must be above zero.");
