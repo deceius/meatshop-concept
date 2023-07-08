@@ -60,15 +60,16 @@
                                             </label> --}}
                                         </th>
 
-                                        <th is='sortable' :column="'transaction_ref_no'">Reference Number</th>
-                                        <th is='sortable' :column="'brand_name'">Customer</th>
-                                        <th is='sortable' :column="'trader_name'">Trader(s)</th>
-                                        <th is='sortable' :column="'brand_name'">Brand</th>
-                                        <th is='sortable' :column="'item_name'">Item</th>
-                                        <th is='sortable' :column="'unit_price'">Unit Price</th>
-                                        <th is='sortable' :column="'quantity_sold'">Quantity</th>
-                                        <th is='sortable' :column="'price_sold'">Amount</th>
-                                        <th is='sortable' :column="'transaction_date'">Payment Date</th>
+                                        <th  :column="'transaction_ref_no'">Reference Number</th>
+                                        <th :column="'brand_name'">Customer</th>
+                                        <th :column="'trader_name'">Trader(s)</th>
+                                        <th :column="'brand_name'">Brand</th>
+                                        <th :column="'item_name'">Item</th>
+                                        <th :column="'unit_price'">Unit Price</th>
+                                        <th :column="'quantity_sold'">Quantity</th>
+                                        <th :column="'price_sold'">Amount</th>
+                                        <th :column="'transaction_date'">Transaction Date</th>
+                                        <th  :column="'payment_date'">Payment Date</th>
 
                                         <th></th>
                                     </tr>
@@ -100,7 +101,8 @@
                                         <td>@{{ item.unit_price }}</td>
                                         <td>@{{ item.quantity_sold }}</td>
                                         <td>@{{ item.price_sold }}</td>
-                                        <td>@{{ item.updated_at  | datetime  }}</td>
+                                        <td>@{{ item.transaction_date  | datetime  }}</td>
+                                        <td>@{{ item.payment_date  | datetime  }}</td>
 
                                         <td>
                                             <div class="row no-gutters">

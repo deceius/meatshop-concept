@@ -125,11 +125,12 @@ class TransactionDetailsController extends EmployeeController
                     td.amount as unit_price,
                     round(sum(td.quantity), 3) as quantity_sold,
                     round(sum(td.selling_price), 2) as price_sold,
-                    th.updated_at'));
+                    th.transaction_date,
+                    case when th.is_paid = 1 then th.updated_at else \'--\' end  as payment_date'));
                 $query->from( 'transaction_details as td');
                 $query->where('th.branch_id', app('user_branch_id'));
                 $query->where('th.status', 1);
-                $query->where('th.is_paid', 1);
+                // $query->where('th.is_paid', 1);
                 $query->where('th.transaction_type_id', 2);
                 $query->with(['customer']);
                 $query->join('transaction_headers as th', 'th.id', '=', 'td.transaction_header_id');

@@ -34,6 +34,7 @@ class SalesReportExport implements FromCollection, WithMapping, WithHeadings, Wi
                     th.payment_ref_no,
                     sum(td.quantity) as quantity_sold,
                     sum(td.selling_price) as price_sold,
+                    th.transaction_date,
                     case when th.is_paid = 1 then th.updated_at else \'--\' end  as payment_date'));
         $query->where('th.branch_id', app('user_branch_id'));
         $query->where('th.status', 1);
@@ -70,6 +71,7 @@ class SalesReportExport implements FromCollection, WithMapping, WithHeadings, Wi
             'Payment',
             'Account Name',
             'Account Number',
+            'Transaction Date',
             'Payment Date'
         ];
     }
@@ -94,6 +96,7 @@ class SalesReportExport implements FromCollection, WithMapping, WithHeadings, Wi
             $result->payment_id,
             $result->payment_account_name,
             $result->payment_ref_no,
+            $result->transaction_date,
             $result->payment_date,
         ];
     }
