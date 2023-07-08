@@ -43,7 +43,7 @@ class StoreTransactionDetail extends FormRequest
                     'transaction_header_id' => ['required'],
                     'item' => ['required'],
                     'qr_code' => ['required'],
-                    'amount' => ['required'],
+                    'amount' => ['required', 'gt:0'],
                     'quantity' => ['required', 'lte:current_weight'],
                     'sale_type' => ['sometimes'],
                 ];
@@ -60,6 +60,7 @@ class StoreTransactionDetail extends FormRequest
         return [
             'quantity.lte' => 'Unable to set quantity. It should not be more than the current stock.',
             'qr_code.unique' => 'QR Code already exists. Please generate a new QR Code to receive this item.',
+            'amount.gt' => 'Price / amount must not be zero.',
         ];
     }
 
