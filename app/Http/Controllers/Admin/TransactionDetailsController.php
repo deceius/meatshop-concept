@@ -264,11 +264,18 @@ class TransactionDetailsController extends EmployeeController
             ['id', 'ref_no', 'qr_code', 'created_by', 'updated_by'],
 
             function ($query) use ($request, $transactionHeaderId) {
+                $transactionHeader = TransactionHeader::where('id', $transactionHeaderId)->first();
                 $query->where('transaction_details.transaction_header_id', $transactionHeaderId);
                 // $query->where('transaction_headers.branch_id', app('user_branch_id'));
                 $query->with(['item']);
                 $query->with(['item.brand']);
 
+                if($transactionHeader->transaction_type_id == 4){
+                    $query->select('transaction_details.*');
+                    $query->addSelect('pullout_transaction.quantity as actual_quantity');
+                    $query->join('transfers', 'transaction_details.transaction_header_id', '=', 'transfers.delivery_transaction_id');
+                    $query->join('transaction_details as pullout_transaction', 'transfers.pullout_transaction_id', '=', 'pullout_transaction.transaction_header_id');
+                }
                 $query->join('transaction_headers', 'transaction_headers.id', '=', 'transaction_details.transaction_header_id');
                 $query->join('items', 'items.id', '=', 'transaction_details.item_id');
                 $query->join('brands', 'items.brand_id', '=', 'brands.id');
