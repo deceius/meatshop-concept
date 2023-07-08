@@ -33,7 +33,7 @@ class StoreTransactionDetail extends FormRequest
                 'transaction_header_id' => ['required'],
                 'item' => ['required'],
                 'qr_code' => ['required', 'unique:transaction_details,qr_code'],
-                'amount' => ['required'],
+                // 'amount' => ['required'],
                 'quantity' => ['required', 'lte:current_weight'],
                 'sale_type' => ['sometimes'],
             ];

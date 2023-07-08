@@ -21,8 +21,9 @@ inline-template>
                                 <th is='sortable' :column="'item_id'">{{ trans('admin.transaction-detail.columns.qr_code') }}</th>
                                 <th is='sortable' :column="'item_id'">{{ trans('admin.transaction-detail.columns.item_id') }}</th>
                                 <th is='sortable' :column="'quantity'">{{ trans('admin.transaction-detail.columns.quantity') }}</th>
-                                <th is='sortable' :column="'amount'">{{ trans('admin.transaction-detail.columns.amount') }}</th>
+
                                 @if($transactionHeader->transaction_type_id == 2)
+                                <th is='sortable' :column="'amount'">{{ trans('admin.transaction-detail.columns.amount') }}</th>
                                 <th is='sortable' :column="'amount'">Total Cost</th>
                                 @endif
                                 <th></th>
@@ -36,8 +37,8 @@ inline-template>
                                 <td>@{{ item.qr_code }}</td>
                                 <td>@{{ item.item.brand.name +  " - " + item.item.name }}</td>
                                 <td>@{{ item.quantity }}</td>
-                                <td>@{{ item.amount }}</td>
                                 @if($transactionHeader->transaction_type_id == 2)
+                                <td>@{{ item.amount }}</td>
                                 <td>@{{ item.total_cost }}</td>
                                 @endif
                                 <td>
