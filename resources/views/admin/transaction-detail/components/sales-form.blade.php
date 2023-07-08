@@ -22,7 +22,7 @@
 <div class="form-group row align-items-center" :class="{'has-danger': errors.has('amount'), 'has-success': fields.amount && fields.amount.valid }">
     <label for="amount" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ trans('admin.transaction-detail.columns.price') }}</label>
         <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
-        <input type="text" v-model="form.amount" readonly v-validate="'required|decimal'" @input="validate($event)" class="form-control" :class="{'form-control-danger': errors.has('amount'), 'form-control-success': fields.amount && fields.amount.valid}" id="amount" name="amount" placeholder="{{ trans('admin.transaction-detail.columns.amount') }}">
+        <input type="text" v-model="form.amount" v-bind:readonly="form.sale_type != 'Manual'" v-validate="'required|decimal'" @input="validate($event)" class="form-control" :class="{'form-control-danger': errors.has('amount'), 'form-control-success': fields.amount && fields.amount.valid}" id="amount" name="amount" placeholder="{{ trans('admin.transaction-detail.columns.amount') }}">
         <div v-if="errors.has('amount')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('amount') }}</div>
     </div>
 </div>
@@ -56,7 +56,7 @@
     <label for="sale_type" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ trans('admin.transaction-detail.columns.sale_type') }}</label>
     <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
         <div class="input-group ">
-            <multiselect v-model="form.sale_type" @input="changeSaleType" placeholder="{{ trans('brackets/admin-ui::admin.forms.select_options') }}" :options="['Box', 'Cutting']" :multiple="false" :preselect-first="true" open-direction="bottom"></multiselect>
+            <multiselect v-model="form.sale_type" @input="changeSaleType" placeholder="{{ trans('brackets/admin-ui::admin.forms.select_options') }}" :options="['Box', 'Cutting', 'Manual']" :multiple="false" :preselect-first="true" open-direction="bottom"></multiselect>
         </div>
         <div v-if="errors.has('sale_type')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('sale_type') }}</div>
     </div>

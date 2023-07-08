@@ -29,6 +29,9 @@ Vue.component('transaction-detail-form', {
         // Note: only simple paths. Expressions are not supported.
         'form.quantity'(newValue) {
             this.updateTotalAmount(this.form.amount, newValue);
+        },
+        'form.amount'(newValue) {
+            this.updateTotalAmount(newValue, this.form.quantity);
         }
     },
     methods: {
@@ -71,14 +74,18 @@ Vue.component('transaction-detail-form', {
             }
         },
         changeSaleType() {
-            axios.get('/app/transaction-details/get-qr?qr_code=' + this.form.qr_code + '&sale_type=' + this.form.sale_type+ '&headerId=' + this.transactionHeaderId).then(
-                response => {
-                    this.$notify({ type: 'success', title: 'Success!', text: 'Price has been updated.'})
-                    this.form.item = response.data.item;
-                    this.form.amount = response.data.price;
-                    this.updateTotalAmount(response.data.price, this.form.quantity);
-                }
-            );
+            if (this.form.sale_type != 'Manual') {
+                axios.get('/app/transaction-details/get-qr?qr_code=' + this.form.qr_code + '&sale_type=' + this.form.sale_type + '&headerId=' + this.transactionHeaderId).then(
+                    response => {
+                        this.$notify({ type: 'success', title: 'Success!', text: 'Price has been updated.'})
+                        this.form.item = response.data.item;
+                        this.form.amount = response.data.price;
+                    }
+                );
+            }
+            else {
+                this.form.amount = 0;
+            }
         },
     },
     mounted: function () {
