@@ -21,7 +21,7 @@ inline-template>
                                 <th is='sortable' :column="'item_id'">{{ trans('admin.transaction-detail.columns.item_id') }}</th>
                                 <th :column="'actual_quantity'">Transfer Count</th>
                                 <th is='sortable' :column="'quantity'">Actual Delivered</th>
-                                <th is='sortable' :column="'amount'">{{ trans('admin.transaction-detail.columns.amount') }}</th>
+                                {{-- <th is='sortable' :column="'amount'">{{ trans('admin.transaction-detail.columns.amount') }}</th> --}}
 
                                 <th></th>
                             </tr>
@@ -34,7 +34,7 @@ inline-template>
                                 <td>@{{ item.item.brand.name +  " - " + item.item.name }}</td>
                                 <td>@{{ item.actual_quantity }}</td>
                                 <td>@{{ item.quantity }}</td>
-                                <td>@{{ item.amount }}</td>
+                                {{-- <td>@{{ item.amount }}</td> --}}
                                 <td>
                                     <div class="row no-gutters">
                                         <div class="col-auto" v-show="{{ $transactionHeader->status }} == 0  && {{ $transactionHeader->branch_id}} == {{ app('user_branch_id') }}">

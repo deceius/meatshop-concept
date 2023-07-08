@@ -28,24 +28,27 @@ class StoreTransactionDetail extends FormRequest
     {
 
         $th = TransactionHeader::where('id', '=', $this->getTransactionHeaderId())->first();
-        if ($th->transaction_type_id == 1) {
-            return [
-                'transaction_header_id' => ['required'],
-                'item' => ['required'],
-                'qr_code' => ['required', 'unique:transaction_details,qr_code'],
-                // 'amount' => ['required'],
-                'quantity' => ['required', 'lte:current_weight'],
-                'sale_type' => ['sometimes'],
-            ];
-        }
-        return [
-            'transaction_header_id' => ['required'],
-            'item' => ['required'],
-            'qr_code' => ['required'],
-            'amount' => ['required'],
-            'quantity' => ['required', 'lte:current_weight'],
-            'sale_type' => ['sometimes'],
-        ];
+        switch ($th->transaction_type_id) {
+            case 1: // Receiving
+                return [
+                    'transaction_header_id' => ['required'],
+                    'item' => ['required'],
+                    'qr_code' => ['required', 'unique:transaction_details,qr_code'],
+                    // 'amount' => ['required'],
+                    'quantity' => ['required', 'lte:current_weight'],
+                    'sale_type' => ['sometimes'],
+                ];
+            default:
+                return [
+                    'transaction_header_id' => ['required'],
+                    'item' => ['required'],
+                    'qr_code' => ['required'],
+                    'amount' => ['required'],
+                    'quantity' => ['required', 'lte:current_weight'],
+                    'sale_type' => ['sometimes'],
+                ];
+            }
+
     }
 
 
