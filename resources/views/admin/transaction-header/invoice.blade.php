@@ -37,11 +37,6 @@
         <br/>
         <br/>
         <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/>
         <div class="px-3 mt-5">
             <table width=100%  class="articles text-center">
                 <thead >
@@ -54,15 +49,15 @@
                 <tbody>
                     @foreach ($data as $detail)
                     <tr>
-                        <td>{{ number_format($detail->quantity, 2, '.', ',')  . ' kg' }}</td>
-                        <td class="text-start"> {{  $detail->item->brand->name . ' ' . $detail->item->name }}</td>
-                        <td>{{ number_format($detail->amount, 2, '.', ',') }}</td>
-                        <td>{{  number_format($detail->selling_price, 2, '.', ',') }}</td>
+                        <td><small>{{ number_format($detail->quantity, 2, '.', ',')  . ' kg' }}</small></td>
+                        <td class="text-start"><small>{{  $detail->item->brand->name . ' ' . $detail->item->name }}</small></td>
+                        <td><small>{{ number_format($detail->amount, 2, '.', ',') }}</small></td>
+                        <td><small>{{  number_format($detail->selling_price, 2, '.', ',') }}</small></td>
                     </tr>
                     @endforeach
                     @foreach (range(1, 15 - count($data)) as $item)
                     <tr>
-                        <td>&nbsp;</td>
+                        <td><small>&nbsp;</small></td>
                         <td></td>
                         <td></td>
                         <td></td>
@@ -71,9 +66,9 @@
                 </tbody>
                <tfoot>
                     <th></th>
-                    <th>&nbsp;</th>
+                    <th><small>&nbsp;</small></th>
                     <th></th>
-                    <th>{{  number_format($sum, 2, '.', ',') }}</th>
+                    <th><small>{{  number_format($sum, 2, '.', ',') }}</small></th>
                 </tfoot>
             </table>
         </div>
