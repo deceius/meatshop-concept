@@ -256,7 +256,6 @@ class ExpensesController extends ManagerController
                                 ->join('branches as b', 'b.id', '=', 'th.branch_id')
                                 ->where(DB::raw('datediff(p.payment_date, CAST(\''. $date .'\' as date))'), 0)
                                 ->where('th.branch_id', app('user_branch_id'))
-                                ->where('th.is_paid', 1)
                                 ->select(DB::raw(
                                     'p.id,
                                     CONCAT(c.name, \' (\', th.ref_no, \')\')  as ref_no,
