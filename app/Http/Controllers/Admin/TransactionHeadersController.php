@@ -173,7 +173,7 @@ class TransactionHeadersController extends EmployeeController
     public function invoice(TransactionHeader $transactionHeader, IndexTransactionDetail $request)
     {
         $this->authorize('admin.transaction-header.edit', $transactionHeader);
-
+        $deliveryTransaction = null;
         $transactionHeader->load('branch');
         $transactionHeader->load('customer');
         if ($transactionHeader->customer){

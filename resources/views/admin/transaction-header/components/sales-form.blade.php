@@ -33,33 +33,6 @@
     </div>
 </div>
 
-<div class="form-group row align-items-center" :class="{'has-danger': errors.has('payment_id'), 'has-success': fields.payment_id && fields.payment_id.valid }">
-    <label for="payment_id" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">Payment</label>
-    <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
-        <div class="input-group ">
-            <multiselect v-model="form.payment_id" @input="validateIfCash" :preselect-first="true" placeholder="{{ trans('brackets/admin-ui::admin.forms.select_options') }}"  :options="['Cash', 'Bank', 'Check']" :multiple="false" :preselect-first="true" open-direction="bottom"></multiselect>
-        </div>
-        <div v-if="errors.has('payment_id')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('payment_id') }}</div>
-    </div>
-</div>
-
-
-<div class="form-group row align-items-center" v-if="form.payment_id != 'Cash'" :class="{'has-danger': errors.has('payment_ref_no'), 'has-success': fields.payment_ref_no && fields.payment_ref_no.valid }">
-    <label for="payment_ref_no" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">Payment Reference Number</label>
-        <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
-        <input :disabled="form.status >= 1 || {{ $branch_id }} != {{ app('user_branch_id') }}" type="text" v-model="form.payment_ref_no" v-validate="'required' " @input="validate($event)" class="form-control" :class="{'form-control-danger': errors.has('payment_ref_no'), 'form-control-success': fields.payment_ref_no && fields.payment_ref_no.valid}" id="payment_ref_no" name="payment_ref_no" placeholder="Payment Reference Number">
-        <div v-if="errors.has('payment_ref_no')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('payment_ref_no') }}</div>
-    </div>
-</div>
-
-<div class="form-group row align-items-center" v-if="form.payment_id != 'Cash'" :class="{'has-danger': errors.has('payment_account_name'), 'has-success': fields.payment_account_name && fields.payment_account_name.valid }">
-    <label for="payment_account_name" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">Payment Account Name</label>
-        <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
-        <input :disabled="form.status >= 1 || {{ $branch_id }} != {{ app('user_branch_id') }}" type="text" v-model="form.payment_account_name" v-validate="'required' " @input="validate($event)" class="form-control" :class="{'form-control-danger': errors.has('payment_account_name'), 'form-control-success': fields.payment_account_name && fields.payment_account_name.valid}" id="payment_account_name" name="payment_account_name" placeholder="Payment Account Name">
-        <div v-if="errors.has('payment_account_name')" class="form-control-feedback form-text" v-cloak>@{{ errors.first('payment_account_name') }}</div>
-    </div>
-</div>
-
 <div class="form-group row align-items-center" :class="{'has-danger': errors.has('customer_category'), 'has-success': fields.customer_category && fields.customer_category.valid }">
     <label for="customer_category" class="col-form-label text-md-right" :class="isFormLocalized ? 'col-md-4' : 'col-md-2'">{{ trans('admin.'.$transactionType.'.columns.customer_category') }}</label>
     <div :class="isFormLocalized ? 'col-md-4' : 'col-md-9 col-xl-8'">
