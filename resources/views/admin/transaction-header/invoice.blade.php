@@ -11,28 +11,6 @@
         </style>
     </head>
     <body>
-        <!--<div class="d-flex justify-content-center mt-3 hidden">-->
-        <!--    <h2> Kumpadres Trading Corp. - {{ $transactionHeader->branch->name }}</h2>-->
-        <!--</div>-->
-        <!--<div class="d-flex justify-content-center mt-0 text-center">-->
-        <!--    <p> {{ $transactionHeader->branch->address }}<br>Non-VAT Reg TIN. {{ $transactionHeader->branch->tin }}</p>-->
-        <!--</div>-->
-        <!--<div class="px-3 mt-5">-->
-        <!--    <table width=100%>-->
-        <!--        <tr>-->
-        <!--            <td width=60% class="text-uppercase"><h4><u>Sales Invoice</u></h4></td>-->
-        <!--            <td><h5><u>No. {{$transactionHeader->invoice_no}}</u></h5></td>-->
-        <!--        </tr>-->
-        <!--        <tr>-->
-        <!--            <td class="align-text-top">Sold To: {{ ($transactionHeader->customer == null) ? '--' : $transactionHeader->customer->name }}</td>-->
-        <!--            <td class="align-text-top">Transaction Date: {{ $transactionHeader->transaction_date }}</td>-->
-        <!--        </tr>-->
-        <!--         <tr>-->
-        <!--            <td class="align-text-top">Address: {{ ($transactionHeader->customer == null) ? '--' : $transactionHeader->customer->address }}</td>-->
-        <!--            <td class="align-text-top">TIN: {{ ($transactionHeader->customer == null) ? '--' : $transactionHeader->customer->tin }}</td>-->
-        <!--        </tr> -->
-        <!--    </table>-->
-        <!--</div>-->
         <br/>
         <br/>
         <br/>
